@@ -1,8 +1,6 @@
 package valerio.BingeBookBE.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -21,4 +19,16 @@ public class Tag {
     @Setter(AccessLevel.NONE)
     private BigInteger id;
     private String name;
+
+    @ManyToOne
+    @JoinColumn(name = "serie_tv_id")
+    private SerieTv serieTv;
+
+    @ManyToOne
+    @JoinColumn(name = "film_id")
+    private Film film;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
 }

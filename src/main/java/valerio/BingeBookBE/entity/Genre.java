@@ -1,9 +1,6 @@
 package valerio.BingeBookBE.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -22,6 +19,14 @@ public class Genre {
     @Setter(AccessLevel.NONE)
     private BigInteger id;
     private String name;
+
+    @ManyToOne
+    @JoinColumn(name = "serie_tv_id")
+    private SerieTv serieTv;
+
+    @ManyToOne
+    @JoinColumn(name = "film_id")
+    private Film film;
 
     public Genre(String name) {
         this.name = name;

@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.math.BigInteger;
+import java.util.List;
 
 @Entity
 @Getter
@@ -22,9 +23,19 @@ public class User {
     private String email;
     private String password;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "role_id", referencedColumnName = "id")
     private Role role;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "personal_data_id", referencedColumnName = "id")
+    private PersonalData personalData;
+
+    @OneToMany(mappedBy = "user")
+    private List<SerieTv> serieTvs;
+
+    @OneToMany(mappedBy = "user")
+    private List<Tag> tags;
 
 
 

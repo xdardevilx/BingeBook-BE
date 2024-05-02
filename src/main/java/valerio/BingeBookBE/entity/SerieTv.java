@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.math.BigInteger;
+import java.util.List;
 
 @Getter
 @Setter
@@ -31,5 +32,14 @@ public class SerieTv {
     @Column(name = "poster_url")
     private String posterUrl;
 
+    @OneToMany(mappedBy = "serieTv")
+    private List<Tag> tags;
+
+    @OneToMany(mappedBy = "serieTv")
+    private List<Genre> genres;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
 
 }
