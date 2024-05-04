@@ -1,7 +1,10 @@
 package valerio.BingeBookBE.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import jakarta.persistence.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
+import jakarta.persistence.ManyToMany;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -27,9 +30,9 @@ public class Genre {
     @ManyToMany(mappedBy = "genres")
     private Set<SerieTv> serieTv = new HashSet<>();
 
-    @ManyToOne
-    @JoinColumn(name = "film_id")
-    private Film film;
+    @JsonIgnore
+    @ManyToMany(mappedBy = "genres")
+    private Set<Film> film = new HashSet<>();
 
     public Genre(String name) {
         this.name = name;

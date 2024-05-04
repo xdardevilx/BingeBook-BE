@@ -7,6 +7,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.math.BigInteger;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Getter
@@ -20,13 +22,11 @@ public class Tag {
     private BigInteger id;
     private String name;
 
-    @ManyToOne
-    @JoinColumn(name = "serie_tv_id")
-    private SerieTv serieTv;
+    @ManyToMany(mappedBy = "tags")
+    private Set<SerieTv> serieTv = new HashSet<>();
 
-    @ManyToOne
-    @JoinColumn(name = "film_id")
-    private Film film;
+    @ManyToMany(mappedBy = "tags")
+    private Set<Film> film = new HashSet<>();
 
     @ManyToOne
     @JoinColumn(name = "user_id")

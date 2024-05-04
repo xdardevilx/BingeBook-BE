@@ -8,7 +8,6 @@ import lombok.Setter;
 
 import java.math.BigInteger;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 @Getter
@@ -40,8 +39,11 @@ public class SerieTv {
             inverseJoinColumns = @JoinColumn(name = "genre_id"))
     private Set<Genre> genres = new HashSet<>();
 
-    @OneToMany(mappedBy = "serieTv")
-    private List<Tag> tags;
+    @ManyToMany
+    @JoinTable(name = "serie_tv_tag",
+            joinColumns = @JoinColumn(name = "serie_tv_id"),
+            inverseJoinColumns = @JoinColumn(name = "tag_id"))
+    private Set<Tag> tags = new HashSet<>();
 
     @ManyToOne
     @JoinColumn(name = "user_id")

@@ -9,8 +9,10 @@ import org.springframework.stereotype.Service;
 import valerio.BingeBookBE.dto.SerieTvDTO;
 import valerio.BingeBookBE.entity.Genre;
 import valerio.BingeBookBE.entity.SerieTv;
+import valerio.BingeBookBE.entity.Tag;
 import valerio.BingeBookBE.repositories.GenreDAO;
 import valerio.BingeBookBE.repositories.SerieTvDAO;
+import valerio.BingeBookBE.repositories.TagDAO;
 
 import java.math.BigInteger;
 import java.util.HashSet;
@@ -21,11 +23,13 @@ public class SerieTvService {
 
     private final SerieTvDAO serieTvDAO;
     private final GenreDAO genreDAO;
+    private final TagDAO tagDAO;
 
     @Autowired
-    SerieTvService(SerieTvDAO serieTvDAO, GenreDAO genreDAO) {
+    SerieTvService(SerieTvDAO serieTvDAO, GenreDAO genreDAO, TagDAO tagDAO) {
         this.serieTvDAO = serieTvDAO;
         this.genreDAO = genreDAO;
+        this.tagDAO = tagDAO;
     }
 
 
@@ -34,7 +38,7 @@ public class SerieTvService {
     }
 
 
-    public SerieTv save(SerieTvDTO serieTvDto) {
+    public SerieTv createSerieTv(SerieTvDTO serieTvDto) {
 
         SerieTv serieTv = new SerieTv();
         serieTv.setTitle(serieTvDto.title().toLowerCase());
@@ -48,9 +52,15 @@ public class SerieTvService {
         }
         serieTv.setGenres(genres);
 
-        serieTv = serieTvDAO.save(serieTv);
+        Set<Tag> tags = new HashSet<>();
+        for (BigInteger tagId : serieTvDto.tagIds()) {
+            Tag tag = tagDAO.findById(tagId).orElseThrow(() -> new IllegalArgumentException("Tag not found with ID: " + tagId));
+            tags.add(tag);
+        }
+        serieTv.setTags(tags);
 
-        return serieTv;
+
+        return serieTvDAO.save(serieTv);
     }
 
     public Page<SerieTv> getListSerieTv(int page, int size, String sortBy) {

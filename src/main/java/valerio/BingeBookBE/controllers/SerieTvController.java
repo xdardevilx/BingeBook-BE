@@ -25,33 +25,19 @@ public class SerieTvController {
     }
 
     @PostMapping("/add")
-    public ResponseEntity<SerieTv> createSerieTv(@RequestBody SerieTvDTO serieTvDTO) {
+    public ResponseEntity<?> createSerieTv(@RequestBody SerieTvDTO serieTvDTO) {
 
-        //create serie
-        SerieTv serieTv = serieTvService.save(serieTvDTO);
+        try {
+            SerieTv serieTv = serieTvService.createSerieTv(serieTvDTO);
+            return new ResponseEntity<SerieTv>(serieTv, HttpStatus.CREATED);
+        } catch (IllegalArgumentException e) {
+            // Return a 400 Bad Request with the error message
+            return ResponseEntity.badRequest().body(e.getMessage());
+        } catch (Exception e) {
+            // Return a 500 Internal Server Error with a generic error message
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred");
+        }
 
-        //assign genre ids to serie
-//        for (Genre e : serieTvDTO.genreIds()) {
-//
-//            Genre genre = genreService.findById(e.getId());
-//
-//            if (genre != null) {
-//                List<Genre> genres = serieTv.getGenres();
-//
-//                if (genres == null) {
-//                    genres = new java.util.ArrayList<Genre>();
-//                }
-//                genres.add(genre);
-//
-//                serieTv.setGenres(genres);
-//            }
-//
-//        }
-
-//        SerieTv a = serieTvService.save(SerieTvDTO.toDto(serieTv));
-
-//        return ResponseEntity.ok(a);
-        return new ResponseEntity<>(serieTv, HttpStatus.CREATED);
     }
 
     @GetMapping("/list")

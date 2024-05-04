@@ -7,7 +7,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.math.BigInteger;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Getter
@@ -19,7 +20,7 @@ public class User {
     @Getter(AccessLevel.NONE)
     @Setter(AccessLevel.NONE)
     private BigInteger id;
-    private String name;
+    private String username;
     private String email;
     private String password;
 
@@ -32,11 +33,13 @@ public class User {
     private PersonalData personalData;
 
     @OneToMany(mappedBy = "user")
-    private List<SerieTv> serieTvs;
+    private Set<SerieTv> serieTvIds = new HashSet<>();
 
     @OneToMany(mappedBy = "user")
-    private List<Tag> tags;
+    private Set<Film> filmIds = new HashSet<>();
 
+    @OneToMany(mappedBy = "user")
+    private Set<Tag> tagIds = new HashSet<>();
 
 
 }

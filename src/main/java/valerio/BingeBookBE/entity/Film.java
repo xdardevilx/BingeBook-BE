@@ -7,7 +7,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.math.BigInteger;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Getter
@@ -25,9 +26,19 @@ public class Film {
     @Column(name = "poster_url")
     private String posterUrl;
 
-    @OneToMany(mappedBy = "film")
-    private List<Tag> tags;
+    @ManyToMany
+    @JoinTable(name = "film_genre",
+            joinColumns = @JoinColumn(name = "film_id"),
+            inverseJoinColumns = @JoinColumn(name = "genre_id"))
+    private Set<Genre> genres = new HashSet<>();
 
-    @OneToMany(mappedBy = "film")
-    private List<Genre> genres;
+    @ManyToMany
+    @JoinTable(name = "film_tag",
+            joinColumns = @JoinColumn(name = "film_id"),
+            inverseJoinColumns = @JoinColumn(name = "tag_id"))
+    private Set<Tag> tags = new HashSet<>();
+
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
 }
