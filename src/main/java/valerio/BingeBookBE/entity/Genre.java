@@ -1,5 +1,6 @@
 package valerio.BingeBookBE.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -7,6 +8,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.math.BigInteger;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Getter
@@ -15,14 +18,14 @@ import java.math.BigInteger;
 public class Genre {
     @Id
     @GeneratedValue
-    @Getter(AccessLevel.NONE)
+//    @Getter(AccessLevel.NONE)
     @Setter(AccessLevel.NONE)
     private BigInteger id;
     private String name;
 
-    @ManyToOne
-    @JoinColumn(name = "serie_tv_id")
-    private SerieTv serieTv;
+    @JsonIgnore
+    @ManyToMany(mappedBy = "genres")
+    private Set<SerieTv> serieTv = new HashSet<>();
 
     @ManyToOne
     @JoinColumn(name = "film_id")

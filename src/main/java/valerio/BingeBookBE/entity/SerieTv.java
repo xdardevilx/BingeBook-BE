@@ -7,7 +7,9 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.math.BigInteger;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -26,17 +28,20 @@ public class SerieTv {
     @Column(name = "last_episode_viewed")
     private int lastEpisodeViewed;
 
-    @Column(name = "last_episode_viewed_episode")
-    private String lastEpisodeViewedSeason;
+    @Column(name = "last_episode_viewed_season")
+    private int lastEpisodeViewedSeason;
 
     @Column(name = "poster_url")
     private String posterUrl;
 
-    @OneToMany(mappedBy = "serieTv")
-    private List<Tag> tags;
+    @ManyToMany
+    @JoinTable(name = "serie_tv_genre",
+            joinColumns = @JoinColumn(name = "serie_tv_id"),
+            inverseJoinColumns = @JoinColumn(name = "genre_id"))
+    private Set<Genre> genres = new HashSet<>();
 
     @OneToMany(mappedBy = "serieTv")
-    private List<Genre> genres;
+    private List<Tag> tags;
 
     @ManyToOne
     @JoinColumn(name = "user_id")

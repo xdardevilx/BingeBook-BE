@@ -6,4 +6,6 @@ import valerio.BingeBookBE.entity.Genre;
 import java.math.BigInteger;
 
 public interface GenreDAO extends JpaRepository<Genre, BigInteger> {
+
+    public Genre findByName(String name);
 }
