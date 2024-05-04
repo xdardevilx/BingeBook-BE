@@ -18,7 +18,7 @@ import java.math.BigInteger;
 public class Role {
     @Id
     @GeneratedValue
-    @Getter(AccessLevel.NONE)
+//    @Getter(AccessLevel.PROTECTED)
     @Setter(AccessLevel.NONE)
     private BigInteger id;
     private String name;
