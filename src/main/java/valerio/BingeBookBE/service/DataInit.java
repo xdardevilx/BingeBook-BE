@@ -4,16 +4,20 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 import valerio.BingeBookBE.entity.Genre;
+import valerio.BingeBookBE.entity.Role;
 import valerio.BingeBookBE.repositories.GenreDAO;
+import valerio.BingeBookBE.repositories.RoleDAO;
 
 @Component
 public class DataInit implements CommandLineRunner {
 
     private final GenreDAO genreDAO;
+    private final RoleDAO roleDAO;
 
     @Autowired
-    public DataInit(GenreDAO genreDAO) {
+    public DataInit(GenreDAO genreDAO, RoleDAO roleDAO) {
         this.genreDAO = genreDAO;
+        this.roleDAO = roleDAO;
     }
 
     @Override
@@ -34,6 +38,11 @@ public class DataInit implements CommandLineRunner {
             saveGenre("History", genreDAO);
         }
 
+        if (roleDAO.count() == 0) {
+            saveRole("ADMIN", roleDAO);
+            saveRole("USER", roleDAO);
+        }
+
 //        SerieTV serieTV1 = new SerieTV();
 //        serieTV1.setTitle("Breaking Bad");
 //        serieTV1.getGenres().add(genre1);
@@ -47,5 +56,11 @@ public class DataInit implements CommandLineRunner {
         Genre _genre = new Genre();
         _genre.setName(name);
         genreDAO.save(_genre);
+    }
+
+    private void saveRole(String name, RoleDAO roleDAO) {
+        Role _role = new Role();
+        _role.setName(name);
+        roleDAO.save(_role);
     }
 }
