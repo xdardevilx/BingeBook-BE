@@ -9,6 +9,8 @@ import valerio.BingeBookBE.dto.TagDTO;
 import valerio.BingeBookBE.entity.Tag;
 import valerio.BingeBookBE.service.TagService;
 
+import java.math.BigInteger;
+
 
 @RestController
 @RequestMapping("/tags")
@@ -34,4 +36,16 @@ public class TagController {
             @RequestParam(defaultValue = "id") String sortBy) {
         return tagService.getListTags(page, size, sortBy);
     }
+
+    @PutMapping("/update")
+    public ResponseEntity<?> updateTag(BigInteger id, TagDTO tagDTO) {
+        Tag tag = tagService.updateTag(id, tagDTO);
+        return new ResponseEntity<Tag>(tag, HttpStatus.OK);
+    }
+
+    @DeleteMapping("/delete")
+    public void deleteTag(BigInteger id) {
+        tagService.deleteTag(id);
+    }
+
 }
