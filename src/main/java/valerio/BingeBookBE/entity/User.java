@@ -5,9 +5,13 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 import java.math.BigInteger;
+import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -17,7 +21,6 @@ import java.util.Set;
 public class User {
     @Id
     @GeneratedValue
-    @Getter(AccessLevel.NONE)
     @Setter(AccessLevel.NONE)
     private BigInteger id;
     private String username;
@@ -40,6 +43,11 @@ public class User {
 
     @OneToMany(mappedBy = "user")
     private Set<Tag> tagIds = new HashSet<>();
+
+
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return List.of(new SimpleGrantedAuthority(this.role.getName()));
+    }
 
 
 }
