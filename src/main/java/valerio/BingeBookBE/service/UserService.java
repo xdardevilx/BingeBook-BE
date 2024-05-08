@@ -10,12 +10,14 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
 
 import valerio.BingeBookBE.config.RoleEnum;
 import valerio.BingeBookBE.dto.PersonalDataDTO;
 import valerio.BingeBookBE.entity.User;
 import valerio.BingeBookBE.repositories.UserDAO;
 
+@Service
 public class UserService {
 
     private final Cloudinary cloudinary;

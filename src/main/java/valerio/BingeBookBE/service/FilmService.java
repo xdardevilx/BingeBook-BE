@@ -1,6 +1,8 @@
 package valerio.BingeBookBE.service;
 
 import com.cloudinary.Cloudinary;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -28,6 +30,7 @@ public class FilmService {
     private final GenreDAO genreDAO;
     private final TagDAO tagDAO;
 
+    @Autowired
     FilmService(FilmDAO filmDAO, Cloudinary cloudinary, GenreDAO genreDAO, TagDAO tagDAO) {
         this.filmDAO = filmDAO;
         this.cloudinary = cloudinary;

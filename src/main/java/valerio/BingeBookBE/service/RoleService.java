@@ -5,6 +5,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.stereotype.Service;
+
 import valerio.BingeBookBE.config.StringConfig;
 import valerio.BingeBookBE.dto.RoleDTO;
 import valerio.BingeBookBE.entity.Role;
@@ -12,6 +14,7 @@ import valerio.BingeBookBE.repositories.RoleDAO;
 
 import java.math.BigInteger;
 
+@Service
 public class RoleService {
     final private RoleDAO roleDAO;
 

@@ -5,6 +5,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.stereotype.Service;
+
 import valerio.BingeBookBE.config.StringConfig;
 import valerio.BingeBookBE.dto.PersonalDataDTO;
 import valerio.BingeBookBE.entity.PersonalData;
@@ -12,6 +14,7 @@ import valerio.BingeBookBE.repositories.PersonalDataDAO;
 
 import java.math.BigInteger;
 
+@Service
 public class PersonalDataService {
    final private PersonalDataDAO personalDataDAO;
 

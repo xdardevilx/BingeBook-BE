@@ -1,6 +1,7 @@
 package valerio.BingeBookBE.controllers;
 
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,6 +17,7 @@ import java.math.BigInteger;
 public class RoleController {
     private final RoleService roleService;
 
+    @Autowired
     private RoleController(RoleService roleService) {
         this.roleService = roleService;
     }

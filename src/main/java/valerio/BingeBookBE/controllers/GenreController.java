@@ -11,9 +11,12 @@ import valerio.BingeBookBE.service.GenreService;
 @RestController
 @RequestMapping("/genres")
 public class GenreController {
+    private final GenreService genreService;
 
     @Autowired
-    private GenreService genreService;
+    GenreController(GenreService genreService) {
+        this.genreService = genreService;
+    }
 
     @GetMapping("/list")
     public Page<Genre> getListGenres(@RequestParam(defaultValue = "0") int page,

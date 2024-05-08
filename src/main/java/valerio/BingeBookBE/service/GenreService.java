@@ -17,8 +17,12 @@ import java.math.BigInteger;
 @Service
 public class GenreService {
 
+    private final GenreDAO genreDAO;
+    
     @Autowired
-    private GenreDAO genreDAO;
+    GenreService(GenreDAO genreDAO) {
+        this.genreDAO = genreDAO;
+    }
 
     /// CREATE
     public Genre save(GenreDTO genreDto) {
