@@ -19,13 +19,20 @@ public class AuthService {
         this.jwtTools = jwtTools;
     }
 
-    public String authenticateDipendenteAndGenerateToken(UserLoginDTO payload) {
+    public String authenticateUserAndGenerateToken(UserLoginDTO payload) {
+
         User user = userDAO.findByEmail(payload.email()).orElse(null);
+
         if (user != null && user.getPassword().equals(payload.password())) {
+
             return jwtTools.createToken(user);
+
         } else {
+
             return null;
+            
         }
+
     }
 
 }
