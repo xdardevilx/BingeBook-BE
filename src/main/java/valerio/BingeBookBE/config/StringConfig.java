@@ -17,6 +17,8 @@ public class StringConfig {
     final public static String nameMessageError = "Nome è obbligatorio";
     final public static String surnameMessageError = "Cognome è obbligatorio";
     final public static String genreMessageError = "Genere è obbligatorio";
+    final public static String userMessageError = "Utente è obbligatorio";
+    final public static String personalDataMessageError = "Dati personali sono obbligatori";
 
     ///ERROR API
     final public static String errorNotFoundRole = "Ruolo non trovato";
