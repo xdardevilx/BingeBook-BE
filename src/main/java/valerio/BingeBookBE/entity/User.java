@@ -1,6 +1,7 @@
 package valerio.BingeBookBE.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -25,6 +26,7 @@ public class User {
     private BigInteger id;
     private String username;
     private String email;
+    @NotNull
     private String password;
     private String profilePicture;
 
