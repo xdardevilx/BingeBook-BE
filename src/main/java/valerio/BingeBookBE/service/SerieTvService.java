@@ -13,6 +13,7 @@ import valerio.BingeBookBE.dto.SerieTvDTO;
 import valerio.BingeBookBE.entity.Genre;
 import valerio.BingeBookBE.entity.SerieTv;
 import valerio.BingeBookBE.entity.Tag;
+import valerio.BingeBookBE.entity.User;
 import valerio.BingeBookBE.repositories.GenreDAO;
 import valerio.BingeBookBE.repositories.SerieTvDAO;
 import valerio.BingeBookBE.repositories.TagDAO;
@@ -38,7 +39,7 @@ public class SerieTvService {
     }
 
     /// CREATE
-    public SerieTv createSerieTv(SerieTvDTO serieTvDto, BigInteger userId) {
+    public SerieTv createSerieTv(SerieTvDTO serieTvDto, User user) {
 
         SerieTv serieTv = new SerieTv();
         serieTv.setTitle(serieTvDto.title().toLowerCase());
@@ -62,7 +63,7 @@ public class SerieTvService {
         }
         serieTv.setTags(tags);
 
-        serieTv.setUserId(userId);
+        serieTv.setUser(user);
 
         return serieTvDAO.save(serieTv);
     }
@@ -78,7 +79,7 @@ public class SerieTvService {
     }
 
     /// UPDATE
-    public SerieTv updateSerieTv(BigInteger idSerieTv, SerieTvDTO serieTvDto, BigInteger userId) {
+    public SerieTv updateSerieTv(BigInteger idSerieTv, SerieTvDTO serieTvDto, User user) {
         SerieTv serieTv = serieTvDAO.findById(idSerieTv).orElse(null);
         if (serieTv == null) {
             return null;
@@ -105,7 +106,7 @@ public class SerieTvService {
         }
         serieTv.setTags(tags);
 
-        serieTv.setUserId(userId);
+        serieTv.setUser(user);
 
         return serieTvDAO.save(serieTv);
     }

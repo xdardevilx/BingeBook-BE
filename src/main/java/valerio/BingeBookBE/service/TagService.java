@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import valerio.BingeBookBE.config.StringConfig;
 import valerio.BingeBookBE.dto.TagDTO;
 import valerio.BingeBookBE.entity.Tag;
+import valerio.BingeBookBE.entity.User;
 import valerio.BingeBookBE.repositories.TagDAO;
 
 import java.math.BigInteger;
@@ -23,10 +24,10 @@ public class TagService {
     }
 
     /// CREATE
-    public Tag createTag(TagDTO tagDTO, BigInteger userId) {
+    public Tag createTag(TagDTO tagDTO, User user) {
         Tag tag = new Tag();
         tag.setName(tagDTO.name());
-        tag.setUserId(userId);
+        tag.setUser(user);
         return tagDAO.save(tag);
     }
 
@@ -37,11 +38,11 @@ public class TagService {
     }
 
     /// UPDATE
-    public Tag updateTag(BigInteger id, TagDTO tagDTO, BigInteger userId) {
+    public Tag updateTag(BigInteger id, TagDTO tagDTO, User user) {
         Tag tag = tagDAO.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException(StringConfig.errorNotFoundRole + ": " + id));
         tag.setName(tagDTO.name());
-        tag.setUserId(userId);
+        tag.setUser(user);
         return tagDAO.save(tag);
     }
 

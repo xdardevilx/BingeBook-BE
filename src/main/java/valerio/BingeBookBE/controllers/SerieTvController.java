@@ -37,7 +37,7 @@ public class SerieTvController {
         User user = userDAO.findByUsername(userDetails.getUsername()).orElse(null);
 
         try {
-            SerieTv serieTv = serieTvService.createSerieTv(serieTvDTO, user.getId());
+            SerieTv serieTv = serieTvService.createSerieTv(serieTvDTO, user);
             return new ResponseEntity<SerieTv>(serieTv, HttpStatus.CREATED);
         } catch (IllegalArgumentException e) {
             // Return a 400 Bad Request with the error message

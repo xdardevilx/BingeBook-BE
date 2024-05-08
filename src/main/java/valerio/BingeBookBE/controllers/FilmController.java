@@ -38,7 +38,7 @@ public class FilmController {
 
         User user = userDAO.findByUsername(userDetails.getUsername()).orElse(null);
 
-        Film film = this.filmService.createFilm(filmDTO, user.getId());
+        Film film = this.filmService.createFilm(filmDTO, user);
 
         return new ResponseEntity<Film>(film, HttpStatus.CREATED);
     }

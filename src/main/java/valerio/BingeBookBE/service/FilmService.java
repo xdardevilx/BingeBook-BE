@@ -16,6 +16,7 @@ import valerio.BingeBookBE.dto.FilmDTO;
 import valerio.BingeBookBE.entity.Film;
 import valerio.BingeBookBE.entity.Genre;
 import valerio.BingeBookBE.entity.Tag;
+import valerio.BingeBookBE.entity.User;
 import valerio.BingeBookBE.repositories.FilmDAO;
 import valerio.BingeBookBE.repositories.GenreDAO;
 import valerio.BingeBookBE.repositories.TagDAO;
@@ -35,7 +36,7 @@ public class FilmService {
     }
 
     /// CREATE
-    public Film createFilm(FilmDTO filmDTO, BigInteger userId) {
+    public Film createFilm(FilmDTO filmDTO, User user) {
         Film film = new Film();
 
         film.setTitle(filmDTO.title());
@@ -59,7 +60,7 @@ public class FilmService {
         film.setTags(tags);
 
         film.setPosterUrl(cloudinary.url().generate(filmDTO.posterUrl()));
-        film.setUserId(userId);
+        film.setUser(user);
 
         return filmDAO.save(film);
     }
@@ -71,7 +72,7 @@ public class FilmService {
     }
 
     /// UPDATE
-    public Film updateFilm(BigInteger idFilm, FilmDTO filmDTO, BigInteger userId) {
+    public Film updateFilm(BigInteger idFilm, FilmDTO filmDTO, User user) {
         Film film = filmDAO.findById(idFilm)
                 .orElseThrow(() -> new IllegalArgumentException(StringConfig.errorNotFoundRole + ": " + idFilm));
 
@@ -96,7 +97,7 @@ public class FilmService {
         film.setTags(tags);
 
         film.setPosterUrl(cloudinary.url().generate(filmDTO.posterUrl()));
-        film.setUserId(userId);
+        film.setUser(user);
         return filmDAO.save(film);
     }
 

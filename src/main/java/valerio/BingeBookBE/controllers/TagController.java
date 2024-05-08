@@ -37,7 +37,7 @@ public class TagController {
 
         User user = userDAO.findByUsername(userDetails.getUsername()).orElse(null);
 
-        Tag tag = tagService.createTag(tagDTO, user.getId());
+        Tag tag = tagService.createTag(tagDTO, user);
         return new ResponseEntity<Tag>(tag, HttpStatus.CREATED);
     }
 
@@ -56,7 +56,7 @@ public class TagController {
 
         User user = userDAO.findByUsername(userDetails.getUsername()).orElse(null);
 
-        Tag tag = tagService.updateTag(id, tagDTO, user.getId());
+        Tag tag = tagService.updateTag(id, tagDTO, user);
         return new ResponseEntity<Tag>(tag, HttpStatus.OK);
     }
 

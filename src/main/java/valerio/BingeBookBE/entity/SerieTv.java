@@ -46,7 +46,7 @@ public class SerieTv {
     private Set<Tag> tags = new HashSet<>();
 
     @ManyToOne
-    @JoinColumn(name = "user_id")
-    private BigInteger userId;
+    @JoinColumn(name = "user")
+    private User user;
 
 }
