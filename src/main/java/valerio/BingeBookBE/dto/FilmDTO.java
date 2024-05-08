@@ -8,7 +8,7 @@ import java.util.Set;
 
 public record FilmDTO(
                 @NotEmpty(message = StringConfig.titleMessageError) String title,
-                String posterUrl,
+        String posterUrl,
                 Set<BigInteger> genreIds,
                 Set<BigInteger> tagIds) {
 

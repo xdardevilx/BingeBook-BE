@@ -2,7 +2,6 @@ package valerio.BingeBookBE.dto;
 
 import jakarta.validation.constraints.NotEmpty;
 import valerio.BingeBookBE.config.StringConfig;
-import valerio.BingeBookBE.entity.User;
 
 import java.math.BigInteger;
 import java.util.Set;

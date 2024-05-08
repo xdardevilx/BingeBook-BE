@@ -5,7 +5,6 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
 import valerio.BingeBookBE.config.RoleEnum;
-import valerio.BingeBookBE.config.StringConfig;
 import valerio.BingeBookBE.entity.Genre;
 import valerio.BingeBookBE.entity.Role;
 import valerio.BingeBookBE.repositories.GenreDAO;

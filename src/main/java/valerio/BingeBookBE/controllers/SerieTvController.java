@@ -5,10 +5,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import valerio.BingeBookBE.dto.SerieTvDTO;
 import valerio.BingeBookBE.entity.SerieTv;
-import valerio.BingeBookBE.service.GenreService;
+import valerio.BingeBookBE.entity.User;
+import valerio.BingeBookBE.repositories.UserDAO;
 import valerio.BingeBookBE.service.SerieTvService;
 
 @RestController
@@ -16,19 +20,24 @@ import valerio.BingeBookBE.service.SerieTvService;
 public class SerieTvController {
 
     private final SerieTvService serieTvService;
-    private final GenreService genreService;
+    private final UserDAO userDAO;
 
     @Autowired
-    private SerieTvController(SerieTvService serieTvService, GenreService genreService) {
+    private SerieTvController(SerieTvService serieTvService, UserDAO userDAO) {
         this.serieTvService = serieTvService;
-        this.genreService = genreService;
+        this.userDAO = userDAO;
     }
 
     @PostMapping("/add")
     public ResponseEntity<?> createSerieTv(@RequestBody SerieTvDTO serieTvDTO) {
 
+                Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+
+        User user = userDAO.findByUsername(userDetails.getUsername()).orElse(null);
+
         try {
-            SerieTv serieTv = serieTvService.createSerieTv(serieTvDTO);
+            SerieTv serieTv = serieTvService.createSerieTv(serieTvDTO, user.getId());
             return new ResponseEntity<SerieTv>(serieTv, HttpStatus.CREATED);
         } catch (IllegalArgumentException e) {
             // Return a 400 Bad Request with the error message
