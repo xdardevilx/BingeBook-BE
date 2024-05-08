@@ -1,6 +1,7 @@
 package valerio.BingeBookBE.dto;
 
 import jakarta.validation.constraints.NotEmpty;
+import org.springframework.web.multipart.MultipartFile;
 import valerio.BingeBookBE.config.StringConfig;
 
 import java.math.BigInteger;
@@ -13,7 +14,7 @@ public record SerieTvDTO(
         int lastEpisodeViewed,
         @NotEmpty(message = StringConfig.lastEpisodeViewedSeason)
         int lastEpisodeViewedSeason,
-        String posterUrl,
+        MultipartFile posterUrl,
         Set<BigInteger> genreIds,
         Set<BigInteger> tagIds
 

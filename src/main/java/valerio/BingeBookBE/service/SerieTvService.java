@@ -1,6 +1,7 @@
 package valerio.BingeBookBE.service;
 
 import com.cloudinary.Cloudinary;
+import com.cloudinary.utils.ObjectUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -43,8 +44,9 @@ public class SerieTvService {
         serieTv.setTitle(serieTvDto.title().toLowerCase());
         serieTv.setLastEpisodeViewed(serieTvDto.lastEpisodeViewed());
         serieTv.setLastEpisodeViewedSeason(serieTvDto.lastEpisodeViewedSeason());
-        serieTv.setPosterUrl(cloudinary.url().generate(serieTvDto.posterUrl()));
+//        serieTv.setPosterUrl(cloudinary.url().generate(serieTvDto.posterUrl()));
 
+        String url = (String) cloudinary.uploader().upload(serieTvDto.posterUrl().getBytes(), ObjectUtils.emptyMap()).get("url");
         Set<Genre> genres = new HashSet<>();
         for (BigInteger genreId : serieTvDto.genreIds()) {
             Genre genre = genreDAO.findById(genreId)
