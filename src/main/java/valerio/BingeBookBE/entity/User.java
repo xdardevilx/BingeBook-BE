@@ -36,13 +36,13 @@ public class User {
     @JoinColumn(name = "personal_data_id", referencedColumnName = "id")
     private PersonalData personalDataId;
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "userRef")
     private Set<SerieTv> serieTvIds = new HashSet<>();
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "userRef")
     private Set<Film> filmIds = new HashSet<>();
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "userRef")
     private Set<Tag> tagIds = new HashSet<>();
 
 

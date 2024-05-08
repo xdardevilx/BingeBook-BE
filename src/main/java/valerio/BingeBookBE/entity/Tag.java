@@ -30,5 +30,5 @@ public class Tag {
 
     @ManyToOne
     @JoinColumn(name = "user")
-    private User user;
+    private User userRef;
 }

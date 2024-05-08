@@ -47,6 +47,6 @@ public class SerieTv {
 
     @ManyToOne
     @JoinColumn(name = "user")
-    private User user;
+    private User userRef;
 
 }

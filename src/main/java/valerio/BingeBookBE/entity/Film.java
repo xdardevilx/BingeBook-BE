@@ -40,5 +40,5 @@ public class Film {
 
     @ManyToOne
     @JoinColumn(name = "user")
-    private User user;
+    private User userRef;
 }
