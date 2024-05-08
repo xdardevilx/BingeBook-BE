@@ -1,16 +1,11 @@
 package valerio.BingeBookBE.service;
 
-import java.math.BigInteger;
-import java.util.HashSet;
-import java.util.Set;
-
+import com.cloudinary.Cloudinary;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-
-import com.cloudinary.Cloudinary;
-
+import org.springframework.stereotype.Service;
 import valerio.BingeBookBE.config.StringConfig;
 import valerio.BingeBookBE.dto.FilmDTO;
 import valerio.BingeBookBE.entity.Film;
@@ -21,6 +16,11 @@ import valerio.BingeBookBE.repositories.FilmDAO;
 import valerio.BingeBookBE.repositories.GenreDAO;
 import valerio.BingeBookBE.repositories.TagDAO;
 
+import java.math.BigInteger;
+import java.util.HashSet;
+import java.util.Set;
+
+@Service
 public class FilmService {
 
     private final FilmDAO filmDAO;
@@ -60,7 +60,7 @@ public class FilmService {
         film.setTags(tags);
 
         film.setPosterUrl(cloudinary.url().generate(filmDTO.posterUrl()));
-        film.setUser(user);
+        film.setUserRef(user);
 
         return filmDAO.save(film);
     }
@@ -97,7 +97,7 @@ public class FilmService {
         film.setTags(tags);
 
         film.setPosterUrl(cloudinary.url().generate(filmDTO.posterUrl()));
-        film.setUser(user);
+        film.setUserRef(user);
         return filmDAO.save(film);
     }
 

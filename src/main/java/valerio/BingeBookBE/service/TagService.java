@@ -27,7 +27,7 @@ public class TagService {
     public Tag createTag(TagDTO tagDTO, User user) {
         Tag tag = new Tag();
         tag.setName(tagDTO.name());
-        tag.setUser(user);
+        tag.setUserRef(user);
         return tagDAO.save(tag);
     }
 
@@ -42,7 +42,7 @@ public class TagService {
         Tag tag = tagDAO.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException(StringConfig.errorNotFoundRole + ": " + id));
         tag.setName(tagDTO.name());
-        tag.setUser(user);
+        tag.setUserRef(user);
         return tagDAO.save(tag);
     }
 

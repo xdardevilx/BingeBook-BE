@@ -29,6 +29,6 @@ public class Tag {
     private Set<Film> film = new HashSet<>();
 
     @ManyToOne
-    @JoinColumn(name = "user")
+    @JoinColumn(name = "user_ref")
     private User userRef;
 }
