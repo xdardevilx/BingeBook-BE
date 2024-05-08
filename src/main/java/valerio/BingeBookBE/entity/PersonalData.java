@@ -23,7 +23,7 @@ public class PersonalData {
     private String name;
     private String surname;
 
-    @OneToOne(mappedBy = "personalData")
+    @OneToOne(mappedBy = "personalDataId")
     private User user;
 
     public PersonalData(String name, String surname) {

@@ -5,7 +5,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import valerio.BingeBookBE.dto.GenreDTO;
-import valerio.BingeBookBE.dto.ResponseDTO;
 import valerio.BingeBookBE.entity.Genre;
 import valerio.BingeBookBE.service.GenreService;
 
@@ -24,14 +23,9 @@ public class GenreController {
     }
 
     @PostMapping("/add")
-    public ResponseDTO<Genre> updateProfile(@RequestBody @Validated GenreDTO genre) {
+    public Genre updateProfile(@RequestBody @Validated GenreDTO genre) {
 
         return this.genreService.save(genre);
     }
-//
-//    @PostMapping("/serie/{idGenre}/{idSerieTV}")
-//    public ResponseDTO<Genre> addSerieToGenre(@PathVariable("idGenre") BigInteger idGenre, @PathVariable("idSerieTV") BigInteger idSerieTv) {
-//        genreService.assignGenreIdsToSerieTV(idSerieTv, idGenre);
-//        return new ResponseDTO<Genre>("success", null);
-//    }
+
 }

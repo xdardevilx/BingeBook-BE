@@ -29,6 +29,15 @@ public class RoleService {
     }
 
     ///READ
+
+    public Role getRoleById(BigInteger id) {
+        return roleDAO.findById(id).orElse(null);
+    }
+
+    public Role getRoleByName(String name) {
+        return roleDAO.findByName(name);
+    }
+
     public Page<Role> getListRoles(int page, int size, String sortBy) {
         Pageable pageable = PageRequest.of(page, size, Sort.by(sortBy));
         return roleDAO.findAll(pageable);

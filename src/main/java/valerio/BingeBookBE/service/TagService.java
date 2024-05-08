@@ -22,30 +22,30 @@ public class TagService {
         this.tagDAO = tagDAO;
     }
 
-    ///CREATE
-    public Tag createTag(TagDTO tagDTO) {
+    /// CREATE
+    public Tag createTag(TagDTO tagDTO, BigInteger userId) {
         Tag tag = new Tag();
         tag.setName(tagDTO.name());
+        tag.setUserId(userId);
         return tagDAO.save(tag);
     }
 
-
-    ///READ
+    /// READ
     public Page<Tag> getListTags(int page, int size, String sortBy) {
         Pageable pageable = PageRequest.of(page, size, Sort.by(sortBy));
         return this.tagDAO.findAll(pageable);
     }
 
-    ///UPDATE
-
-    public Tag updateTag(BigInteger id, TagDTO tagDTO) {
-        Tag tag = tagDAO.findById(id).orElseThrow(() -> new IllegalArgumentException(StringConfig.errorNotFoundRole + ": " + id));
+    /// UPDATE
+    public Tag updateTag(BigInteger id, TagDTO tagDTO, BigInteger userId) {
+        Tag tag = tagDAO.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException(StringConfig.errorNotFoundRole + ": " + id));
         tag.setName(tagDTO.name());
+        tag.setUserId(userId);
         return tagDAO.save(tag);
     }
 
-    ///DELETE
-
+    /// DELETE
     public void deleteTag(BigInteger id) {
         tagDAO.deleteById(id);
     }

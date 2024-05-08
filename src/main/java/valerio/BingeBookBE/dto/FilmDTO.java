@@ -7,11 +7,9 @@ import java.math.BigInteger;
 import java.util.Set;
 
 public record FilmDTO(
-        @NotEmpty(message = StringConfig.titleMessageError)
-        String title,
-
-        Set<BigInteger> genreIds,
-        Set<BigInteger> tagIds
-) {
+                @NotEmpty(message = StringConfig.titleMessageError) String title,
+                String posterUrl,
+                Set<BigInteger> genreIds,
+                Set<BigInteger> tagIds) {
 
 }

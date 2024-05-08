@@ -26,6 +26,7 @@ public class User {
     private String username;
     private String email;
     private String password;
+    private String profilePicture;
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "role_id", referencedColumnName = "id")
@@ -33,15 +34,15 @@ public class User {
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "personal_data_id", referencedColumnName = "id")
-    private PersonalData personalData;
+    private PersonalData personalDataId;
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "userId")
     private Set<SerieTv> serieTvIds = new HashSet<>();
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "userId")
     private Set<Film> filmIds = new HashSet<>();
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "userId")
     private Set<Tag> tagIds = new HashSet<>();
 
 

@@ -10,19 +10,23 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
 import valerio.BingeBookBE.entity.User;
+import valerio.BingeBookBE.repositories.UserDAO;
 import valerio.BingeBookBE.service.UserService;
 
 import java.io.IOException;
+import java.math.BigInteger;
 
 public class JWTFilter extends OncePerRequestFilter {
-    @Autowired
+
+    private final UserDAO userDAO;
     private final JWTTools jwtTools;
 
+    // @Autowired
+    // UserService userService;
+
     @Autowired
-    UserService userService;
-
-
-    public JWTFilter(JWTTools jwtTools) {
+    JWTFilter(UserDAO userDAO, JWTTools jwtTools) {
+        this.userDAO = userDAO;
         this.jwtTools = jwtTools;
     }
 
@@ -38,7 +42,7 @@ public class JWTFilter extends OncePerRequestFilter {
             String accessToken = authHeader.substring(7);
             jwtTools.verifyToken(accessToken);
             String id = jwtTools.extractIdFromToken(accessToken);
-            User found = userService.findById(Long.parseLong(id));
+            User found = userDAO.findById(new BigInteger(id)).orElse(null);
             Authentication authentication = new UsernamePasswordAuthenticationToken(found, null, found.getAuthorities());
             SecurityContextHolder.getContext().setAuthentication(authentication);
             filterChain.doFilter(request, response);

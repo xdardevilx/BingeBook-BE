@@ -6,4 +6,6 @@ import valerio.BingeBookBE.entity.Role;
 import java.math.BigInteger;
 
 public interface RoleDAO extends JpaRepository<Role, BigInteger> {
+
+    public Role findByName(String name);
 }

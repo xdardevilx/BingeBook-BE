@@ -6,6 +6,9 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+
+import com.cloudinary.Cloudinary;
+
 import valerio.BingeBookBE.dto.SerieTvDTO;
 import valerio.BingeBookBE.entity.Genre;
 import valerio.BingeBookBE.entity.SerieTv;
@@ -24,49 +27,91 @@ public class SerieTvService {
     private final SerieTvDAO serieTvDAO;
     private final GenreDAO genreDAO;
     private final TagDAO tagDAO;
+    private final Cloudinary cloudinary;
 
     @Autowired
-    SerieTvService(SerieTvDAO serieTvDAO, GenreDAO genreDAO, TagDAO tagDAO) {
+    SerieTvService(SerieTvDAO serieTvDAO, GenreDAO genreDAO, TagDAO tagDAO, Cloudinary cloudinary) {
         this.serieTvDAO = serieTvDAO;
         this.genreDAO = genreDAO;
         this.tagDAO = tagDAO;
+        this.cloudinary = cloudinary;
     }
 
-
-    public SerieTv findById(BigInteger id) {
-        return serieTvDAO.findById(id).orElse(null);
-    }
-
-
-    public SerieTv createSerieTv(SerieTvDTO serieTvDto) {
+    /// CREATE
+    public SerieTv createSerieTv(SerieTvDTO serieTvDto, BigInteger userId) {
 
         SerieTv serieTv = new SerieTv();
         serieTv.setTitle(serieTvDto.title().toLowerCase());
         serieTv.setLastEpisodeViewed(serieTvDto.lastEpisodeViewed());
         serieTv.setLastEpisodeViewedSeason(serieTvDto.lastEpisodeViewedSeason());
+        serieTv.setPosterUrl(cloudinary.url().generate(serieTvDto.posterUrl()));
 
         Set<Genre> genres = new HashSet<>();
         for (BigInteger genreId : serieTvDto.genreIds()) {
-            Genre genre = genreDAO.findById(genreId).orElseThrow(() -> new IllegalArgumentException("Genre not found with ID: " + genreId));
+            Genre genre = genreDAO.findById(genreId)
+                    .orElseThrow(() -> new IllegalArgumentException("Genre not found with ID: " + genreId));
             genres.add(genre);
         }
         serieTv.setGenres(genres);
 
         Set<Tag> tags = new HashSet<>();
         for (BigInteger tagId : serieTvDto.tagIds()) {
-            Tag tag = tagDAO.findById(tagId).orElseThrow(() -> new IllegalArgumentException("Tag not found with ID: " + tagId));
+            Tag tag = tagDAO.findById(tagId)
+                    .orElseThrow(() -> new IllegalArgumentException("Tag not found with ID: " + tagId));
             tags.add(tag);
         }
         serieTv.setTags(tags);
 
+        serieTv.setUserId(userId);
 
         return serieTvDAO.save(serieTv);
+    }
+
+    /// READ
+    public SerieTv getSerieTvById(BigInteger id) {
+        return serieTvDAO.findById(id).orElse(null);
     }
 
     public Page<SerieTv> getListSerieTv(int page, int size, String sortBy) {
         Pageable pageable = PageRequest.of(page, size, Sort.by(sortBy));
         return this.serieTvDAO.findAll(pageable);
     }
+
+    /// UPDATE
+    public SerieTv updateSerieTv(BigInteger idSerieTv, SerieTvDTO serieTvDto, BigInteger userId) {
+        SerieTv serieTv = serieTvDAO.findById(idSerieTv).orElse(null);
+        if (serieTv == null) {
+            return null;
+        }
+
+        serieTv.setTitle(serieTvDto.title().toLowerCase());
+        serieTv.setLastEpisodeViewed(serieTvDto.lastEpisodeViewed());
+        serieTv.setLastEpisodeViewedSeason(serieTvDto.lastEpisodeViewedSeason());
+        serieTv.setPosterUrl(cloudinary.url().generate(serieTvDto.posterUrl()));
+
+        Set<Genre> genres = new HashSet<>();
+        for (BigInteger genreId : serieTvDto.genreIds()) {
+            Genre genre = genreDAO.findById(genreId)
+                    .orElseThrow(() -> new IllegalArgumentException("Genre not found with ID: " + genreId));
+            genres.add(genre);
+        }
+        serieTv.setGenres(genres);
+
+        Set<Tag> tags = new HashSet<>();
+        for (BigInteger tagId : serieTvDto.tagIds()) {
+            Tag tag = tagDAO.findById(tagId)
+                    .orElseThrow(() -> new IllegalArgumentException("Tag not found with ID: " + tagId));
+            tags.add(tag);
+        }
+        serieTv.setTags(tags);
+
+        serieTv.setUserId(userId);
+
+        return serieTvDAO.save(serieTv);
+    }
+
+    /// DELETE
+    public void deleteSerieTv(BigInteger id) {
+        serieTvDAO.deleteById(id);
+    }
 }
-
-

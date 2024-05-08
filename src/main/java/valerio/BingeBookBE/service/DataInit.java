@@ -3,6 +3,9 @@ package valerio.BingeBookBE.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
+
+import valerio.BingeBookBE.config.RoleEnum;
+import valerio.BingeBookBE.config.StringConfig;
 import valerio.BingeBookBE.entity.Genre;
 import valerio.BingeBookBE.entity.Role;
 import valerio.BingeBookBE.repositories.GenreDAO;
@@ -39,8 +42,8 @@ public class DataInit implements CommandLineRunner {
         }
 
         if (roleDAO.count() == 0) {
-            saveRole("ADMIN", roleDAO);
-            saveRole("USER", roleDAO);
+            saveRole(RoleEnum.ADMIN.toString(), roleDAO);
+            saveRole(RoleEnum.USER.toString(), roleDAO);
         }
 
 //        SerieTV serieTV1 = new SerieTV();

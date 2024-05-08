@@ -13,7 +13,7 @@ public record SerieTvDTO(
         int lastEpisodeViewed,
         @NotEmpty(message = StringConfig.lastEpisodeViewedSeason)
         int lastEpisodeViewedSeason,
-
+        String posterUrl,
         Set<BigInteger> genreIds,
         Set<BigInteger> tagIds
 
