@@ -8,6 +8,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.io.IOException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
@@ -32,7 +35,7 @@ public class FilmController {
     }
 
     @PostMapping("/create")
-    public ResponseEntity<Film> createFilm(@RequestBody @Validated FilmDTO filmDTO) {
+    public ResponseEntity<Film> createFilm(@RequestBody @Validated FilmDTO filmDTO) throws IOException {
         // Get authenticated user details
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();

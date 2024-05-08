@@ -17,6 +17,7 @@ import valerio.BingeBookBE.repositories.GenreDAO;
 import valerio.BingeBookBE.repositories.SerieTvDAO;
 import valerio.BingeBookBE.repositories.TagDAO;
 
+import java.io.IOException;
 import java.math.BigInteger;
 import java.util.HashSet;
 import java.util.Set;
@@ -38,15 +39,19 @@ public class SerieTvService {
     }
 
     /// CREATE
-    public SerieTv createSerieTv(SerieTvDTO serieTvDto, User user) {
+    public SerieTv createSerieTv(SerieTvDTO serieTvDto, User user) throws IOException {
 
         SerieTv serieTv = new SerieTv();
         serieTv.setTitle(serieTvDto.title().toLowerCase());
         serieTv.setLastEpisodeViewed(serieTvDto.lastEpisodeViewed());
         serieTv.setLastEpisodeViewedSeason(serieTvDto.lastEpisodeViewedSeason());
-//        serieTv.setPosterUrl(cloudinary.url().generate(serieTvDto.posterUrl()));
+        // serieTv.setPosterUrl(cloudinary.url().generate(serieTvDto.posterUrl()));
 
-        String url = (String) cloudinary.uploader().upload(serieTvDto.posterUrl().getBytes(), ObjectUtils.emptyMap()).get("url");
+        String url = (String) cloudinary.uploader().upload(serieTvDto.posterUrl().getBytes(), ObjectUtils.emptyMap())
+                .get("url");
+
+        serieTv.setPosterUrl(url);
+
         Set<Genre> genres = new HashSet<>();
         for (BigInteger genreId : serieTvDto.genreIds()) {
             Genre genre = genreDAO.findById(genreId)
@@ -79,7 +84,7 @@ public class SerieTvService {
     }
 
     /// UPDATE
-    public SerieTv updateSerieTv(BigInteger idSerieTv, SerieTvDTO serieTvDto, User user) {
+    public SerieTv updateSerieTv(BigInteger idSerieTv, SerieTvDTO serieTvDto, User user) throws IOException {
         SerieTv serieTv = serieTvDAO.findById(idSerieTv).orElse(null);
         if (serieTv == null) {
             return null;
@@ -88,7 +93,10 @@ public class SerieTvService {
         serieTv.setTitle(serieTvDto.title().toLowerCase());
         serieTv.setLastEpisodeViewed(serieTvDto.lastEpisodeViewed());
         serieTv.setLastEpisodeViewedSeason(serieTvDto.lastEpisodeViewedSeason());
-        serieTv.setPosterUrl(cloudinary.url().generate(serieTvDto.posterUrl()));
+        String url = (String) cloudinary.uploader().upload(serieTvDto.posterUrl().getBytes(), ObjectUtils.emptyMap())
+                .get("url");
+
+        serieTv.setPosterUrl(url);
 
         Set<Genre> genres = new HashSet<>();
         for (BigInteger genreId : serieTvDto.genreIds()) {

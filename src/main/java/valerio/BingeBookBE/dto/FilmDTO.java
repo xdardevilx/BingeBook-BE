@@ -6,9 +6,11 @@ import valerio.BingeBookBE.config.StringConfig;
 import java.math.BigInteger;
 import java.util.Set;
 
+import org.springframework.web.multipart.MultipartFile;
+
 public record FilmDTO(
                 @NotEmpty(message = StringConfig.titleMessageError) String title,
-        String posterUrl,
+        MultipartFile posterUrl,
                 Set<BigInteger> genreIds,
                 Set<BigInteger> tagIds) {
 

@@ -1,6 +1,8 @@
 package valerio.BingeBookBE.service;
 
 import com.cloudinary.Cloudinary;
+import com.cloudinary.utils.ObjectUtils;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -17,6 +19,7 @@ import valerio.BingeBookBE.repositories.FilmDAO;
 import valerio.BingeBookBE.repositories.GenreDAO;
 import valerio.BingeBookBE.repositories.TagDAO;
 
+import java.io.IOException;
 import java.math.BigInteger;
 import java.util.HashSet;
 import java.util.Set;
@@ -38,7 +41,7 @@ public class FilmService {
     }
 
     /// CREATE
-    public Film createFilm(FilmDTO filmDTO, User user) {
+    public Film createFilm(FilmDTO filmDTO, User user) throws IOException {
         Film film = new Film();
 
         film.setTitle(filmDTO.title());
@@ -61,7 +64,10 @@ public class FilmService {
 
         film.setTags(tags);
 
-        film.setPosterUrl(cloudinary.url().generate(filmDTO.posterUrl()));
+        String url = (String) cloudinary.uploader().upload(filmDTO.posterUrl().getBytes(), ObjectUtils.emptyMap())
+                .get("url");
+        film.setPosterUrl(url);
+
         film.setUserRef(user);
 
         return filmDAO.save(film);
@@ -74,7 +80,7 @@ public class FilmService {
     }
 
     /// UPDATE
-    public Film updateFilm(BigInteger idFilm, FilmDTO filmDTO, User user) {
+    public Film updateFilm(BigInteger idFilm, FilmDTO filmDTO, User user) throws IOException {
         Film film = filmDAO.findById(idFilm)
                 .orElseThrow(() -> new IllegalArgumentException(StringConfig.errorNotFoundRole + ": " + idFilm));
 
@@ -98,7 +104,9 @@ public class FilmService {
 
         film.setTags(tags);
 
-        film.setPosterUrl(cloudinary.url().generate(filmDTO.posterUrl()));
+        String url = (String) cloudinary.uploader().upload(filmDTO.posterUrl().getBytes(), ObjectUtils.emptyMap())
+                .get("url");
+        film.setPosterUrl(url);
         film.setUserRef(user);
         return filmDAO.save(film);
     }

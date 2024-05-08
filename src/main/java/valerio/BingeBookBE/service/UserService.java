@@ -1,7 +1,9 @@
 package valerio.BingeBookBE.service;
 
 import com.cloudinary.Cloudinary;
+import com.cloudinary.utils.ObjectUtils;
 
+import java.io.IOException;
 import java.math.BigInteger;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 import valerio.BingeBookBE.config.RoleEnum;
 import valerio.BingeBookBE.dto.PersonalDataDTO;
+import valerio.BingeBookBE.dto.UserDTO;
 import valerio.BingeBookBE.entity.User;
 import valerio.BingeBookBE.repositories.UserDAO;
 
@@ -27,7 +30,8 @@ public class UserService {
     private final RoleService roleService;
 
     @Autowired
-    UserService(Cloudinary cloudinary, UserDAO userDAO, PasswordEncoder bcryptEncoder, PersonalDataService personalDataService, RoleService roleService) {
+    UserService(Cloudinary cloudinary, UserDAO userDAO, PasswordEncoder bcryptEncoder,
+            PersonalDataService personalDataService, RoleService roleService) {
         this.cloudinary = cloudinary;
         this.userDAO = userDAO;
         this.bcryptEncoder = bcryptEncoder;
@@ -35,24 +39,27 @@ public class UserService {
         this.roleService = roleService;
     }
 
-    ///CREATE
-    public User saveUser(User user, PersonalDataDTO personalDataDTO) {
-        user.setProfilePicture(cloudinary.url().generate(user.getProfilePicture()));
+    /// CREATE
+    public User saveUser(UserDTO userDto, PersonalDataDTO personalDataDTO) throws IOException {
+        User user = new User();
+        String url = (String) cloudinary.uploader().upload(userDto.profilePicture().getBytes(), ObjectUtils.emptyMap())
+                .get("url");
+
+        user.setProfilePicture(url);
         user.setUsername(user.getUsername().toLowerCase());
         user.setEmail(user.getEmail().toLowerCase());
         user.setPassword(bcryptEncoder.encode(user.getPassword()));
 
-
-        ///Create PersonalData
+        /// Create PersonalData
         user.setPersonalDataId(personalDataService.createPersonalData(personalDataDTO));
 
-        ///Set Role
+        /// Set Role
         user.setRole(roleService.getRoleByName(RoleEnum.USER.toString()));
 
         return userDAO.save(user);
     }
 
-    ///READ
+    /// READ
     public User getUserById(BigInteger id) {
         return userDAO.findById(id).orElse(null);
     }
@@ -62,21 +69,24 @@ public class UserService {
         return userDAO.findAll(pageable);
     }
 
-    ///UPDATE
-    public User updateUser(BigInteger id, User user) {
+    /// UPDATE
+    public User updateUser(BigInteger id, UserDTO userDto) throws IOException {
         User userToUpdate = userDAO.findById(id).orElse(null);
         if (userToUpdate == null) {
             return null;
         }
-        userToUpdate.setProfilePicture(cloudinary.url().generate(user.getProfilePicture()));
-        userToUpdate.setUsername(user.getUsername());
-        userToUpdate.setEmail(user.getEmail());
-        userToUpdate.setPassword(bcryptEncoder.encode(user.getPassword()));
+
+        String url = (String) cloudinary.uploader().upload(userDto.profilePicture().getBytes(), ObjectUtils.emptyMap())
+                .get("url");
+
+        userToUpdate.setProfilePicture(url);
+        userToUpdate.setUsername(userDto.username());
+        userToUpdate.setEmail(userDto.email());
+        userToUpdate.setPassword(bcryptEncoder.encode(userDto.password()));
         return userDAO.save(userToUpdate);
     }
 
-
-    ///DELETE
+    /// DELETE
     public void deleteUser(BigInteger id) {
         userDAO.deleteById(id);
     }

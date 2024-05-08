@@ -6,6 +6,8 @@ import valerio.BingeBookBE.config.StringConfig;
 import java.math.BigInteger;
 import java.util.Set;
 
+import org.springframework.web.multipart.MultipartFile;
+
 public record UserDTO(
         @NotEmpty(message = StringConfig.usernameMessageError)
         String username,
@@ -17,7 +19,9 @@ public record UserDTO(
         String password,
 
         @NotEmpty(message = StringConfig.roleMessageError)
-        BigInteger roleId,
+                BigInteger roleId,
+        
+                MultipartFile profilePicture,
 
         Set<BigInteger> serieTvIds,
         Set<BigInteger> filmIds,
