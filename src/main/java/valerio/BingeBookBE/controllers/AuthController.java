@@ -1,20 +1,18 @@
-package valerio.BingeBookBE.config;
+package valerio.BingeBookBE.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import valerio.BingeBookBE.dto.PersonalDataDTO;
-import valerio.BingeBookBE.dto.UserDTO;
+
 import valerio.BingeBookBE.dto.UserLoginDTO;
 import valerio.BingeBookBE.dto.UserLoginResponseDTO;
-import valerio.BingeBookBE.entity.User;
+import valerio.BingeBookBE.dto.UserPersonalDataRoleDTO;
 import valerio.BingeBookBE.service.AuthService;
 import valerio.BingeBookBE.service.UserService;
+import valerio.BingeBookBE.config.StringConfig;
 
 import java.io.IOException;
-
 
 @RestController
 @RequestMapping("/auth")
@@ -32,16 +30,18 @@ public class AuthController {
 
     @PostMapping("/login")
     public UserLoginResponseDTO login(@RequestBody UserLoginDTO userLoginDTO) {
-        return new UserLoginResponseDTO(this.authService.authenticateDipendenteAndGenerateToken(userLoginDTO));
+        return new UserLoginResponseDTO(this.authService.authenticateUserAndGenerateToken(userLoginDTO));
     }
 
-    @PostMapping("/signup")
-    @ResponseStatus(HttpStatus.CREATED)
-    public User saveUser(@RequestBody @Validated UserDTO userDTO, @RequestBody @Validated PersonalDataDTO personalDataDTO, BindingResult validation) throws IOException {
-//        if (validation.hasErrors()) {
-//            throw new BadRequestException(validation.getAllErrors());
-//        }
+    @PostMapping("/register")
+    public void register(@RequestBody @Validated UserPersonalDataRoleDTO userPersonalDataRoleDTO,
+                         BindingResult bindingResult)
+            throws IOException {
 
-        return this.userService.saveUser(userDTO, personalDataDTO);
+        if (bindingResult.hasErrors()) {
+            throw new IOException(StringConfig.errorInsertData);
+        }
+
+        userService.saveUser(userPersonalDataRoleDTO.userDTO(), userPersonalDataRoleDTO.personalDataDTO());
     }
 }
