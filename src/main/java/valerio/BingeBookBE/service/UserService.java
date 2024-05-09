@@ -2,10 +2,6 @@ package valerio.BingeBookBE.service;
 
 import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
-
-import java.io.IOException;
-import java.math.BigInteger;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -13,12 +9,14 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
 import valerio.BingeBookBE.config.RoleEnum;
 import valerio.BingeBookBE.dto.PersonalDataDTO;
 import valerio.BingeBookBE.dto.UserDTO;
 import valerio.BingeBookBE.entity.User;
 import valerio.BingeBookBE.repositories.UserDAO;
+
+import java.io.IOException;
+import java.math.BigInteger;
 
 @Service
 public class UserService {
@@ -31,7 +29,7 @@ public class UserService {
 
     @Autowired
     UserService(Cloudinary cloudinary, UserDAO userDAO, PasswordEncoder bcryptEncoder,
-            PersonalDataService personalDataService, RoleService roleService) {
+                PersonalDataService personalDataService, RoleService roleService) {
         this.cloudinary = cloudinary;
         this.userDAO = userDAO;
         this.bcryptEncoder = bcryptEncoder;
@@ -41,14 +39,17 @@ public class UserService {
 
     /// CREATE
     public User saveUser(UserDTO userDto, PersonalDataDTO personalDataDTO) throws IOException {
+        System.out.println("test prova user: " + userDto + " ----------");
         User user = new User();
-        String url = (String) cloudinary.uploader().upload(userDto.profilePicture().getBytes(), ObjectUtils.emptyMap())
-                .get("url");
+        if (userDto.profilePicture() != null) {
+            String url = (String) cloudinary.uploader().upload(userDto.profilePicture().getBytes(), ObjectUtils.emptyMap())
+                    .get("url");
+            user.setProfilePicture(url);
+        }
 
-        user.setProfilePicture(url);
-        user.setUsername(user.getUsername().toLowerCase());
-        user.setEmail(user.getEmail().toLowerCase());
-        user.setPassword(bcryptEncoder.encode(user.getPassword()));
+        user.setUsername(userDto.username().toLowerCase());
+        user.setEmail(userDto.email().toLowerCase());
+        user.setPassword(bcryptEncoder.encode(userDto.password()));
 
         /// Create PersonalData
         user.setPersonalDataId(personalDataService.createPersonalData(personalDataDTO));
