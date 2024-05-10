@@ -1,49 +1,106 @@
 package valerio.BingeBookBE.exception;
 
-import io.jsonwebtoken.ExpiredJwtException;
-import io.jsonwebtoken.JwtException;
-import io.jsonwebtoken.MalformedJwtException;
-import io.jsonwebtoken.UnsupportedJwtException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
-
-import java.io.IOException;
 
 @Component
 public class ErrorInterceptor implements HandlerInterceptor {
 
     @Override
-    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
+            throws Exception {
         // Add pre-processing logic here
+        int statusCode = response.getStatus();
+        switch (statusCode) {
+            case HttpServletResponse.SC_INTERNAL_SERVER_ERROR:
+                // Handle 500 Internal Server Error
+                // Log the error, send an email notification, etc.
+                System.out.println("Internal Server Error occurred");
+                break;
+            case HttpServletResponse.SC_NOT_FOUND:
+                // Handle 404 Not Found
+                // Redirect to a custom error page, log the error, etc.
+                System.out.println("Resource not found: " + request.getRequestURI());
+                break;
+            case HttpServletResponse.SC_UNAUTHORIZED:
+                // Handle 401 Unauthorized
+                // Redirect to login page, send error response, etc.
+                System.out.println("Unauthorized access: " + request.getRequestURI());
+                break;
+            default:
+                // Handle other status codes if needed
+                break;
+        }
         return true; // Return true to continue processing the request
     }
 
     @Override
-    public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView) throws Exception {
+    public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler,
+            ModelAndView modelAndView) throws Exception {
         // Add post-processing logic here
-    }
-
-    @Override
-    public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) throws Exception {
-        if (response.getStatus() == HttpStatus.BAD_REQUEST.value() || response.getStatus() == HttpStatus.INTERNAL_SERVER_ERROR.value()) {
-            // Handle errors for status codes 400 and 500
-            // Log the error
-            System.err.println("Error " + response.getStatus() + ": " + HttpStatus.valueOf(response.getStatus()).getReasonPhrase());
-            // Optionally, perform additional error handling tasks
+        int statusCode = response.getStatus();
+        switch (statusCode) {
+            case HttpServletResponse.SC_INTERNAL_SERVER_ERROR:
+                // Handle 500 Internal Server Error
+                // Log the error, send an email notification, etc.
+                System.out.println("Internal Server Error occurred");
+                break;
+            case HttpServletResponse.SC_NOT_FOUND:
+                // Handle 404 Not Found
+                // Redirect to a custom error page, log the error, etc.
+                System.out.println("Resource not found: " + request.getRequestURI());
+                break;
+            case HttpServletResponse.SC_UNAUTHORIZED:
+                // Handle 401 Unauthorized
+                // Redirect to login page, send error response, etc.
+                System.out.println("Unauthorized access: " + request.getRequestURI());
+                break;
+            default:
+                // Handle other status codes if needed
+                break;
         }
     }
 
-    private void handleJwtException(Exception ex, HttpServletResponse response) throws IOException {
-        if (ex instanceof ExpiredJwtException || ex instanceof UnsupportedJwtException || ex instanceof MalformedJwtException || ex instanceof JwtException) {
-            // Token related exceptions
-            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Problems with token! Please login again!");
-        } else {
-            // Other exceptions
-            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Internal Server Error");
+    @Override
+    public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex)
+            throws Exception {
+        int statusCode = response.getStatus();
+        switch (statusCode) {
+            case HttpServletResponse.SC_INTERNAL_SERVER_ERROR:
+                // Handle 500 Internal Server Error
+                // Log the error, send an email notification, etc.
+                System.out.println("Internal Server Error occurred");
+                logErrorDetails(request, ex);
+                break;
+            case HttpServletResponse.SC_NOT_FOUND:
+                // Handle 404 Not Found
+                // Redirect to a custom error page, log the error, etc.
+                System.out.println("Resource not found: " + request.getRequestURI());
+                break;
+            case HttpServletResponse.SC_UNAUTHORIZED:
+                // Handle 401 Unauthorized
+                // Redirect to login page, send error response, etc.
+                System.out.println("Unauthorized access: " + request.getRequestURI());
+                break;
+            default:
+                // Handle other status codes if needed
+                break;
+        }
+    }
+
+    private void logErrorDetails(HttpServletRequest request, Exception ex) {
+        // Log error details
+        System.out.println("Error details:");
+        if (request != null) {
+            System.out.println("Request URL: " + request.getRequestURL());
+        }
+        if(ex != null) {
+            System.out.println("Exception message: " + ex.getMessage());
+            // Log stack trace if needed
+            ex.printStackTrace();
         }
     }
 }

@@ -29,4 +29,5 @@ public class StringConfig {
     final public static String errorNotFoundEpisode = "Episodio non trovato";
     final public static String errorNotFoundSeason = "Stagione non trovata";
     final public static String errorInsertData = "Errore inserimento dati";
+    final public static String errorUnauthorized = "Inserisci il tuo token in Authorization Header";
 }

@@ -11,6 +11,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.util.AntPathMatcher;
 import org.springframework.web.filter.OncePerRequestFilter;
+
+import valerio.BingeBookBE.config.StringConfig;
 import valerio.BingeBookBE.entity.User;
 import valerio.BingeBookBE.repositories.UserDAO;
 
@@ -23,9 +25,6 @@ public class JWTFilter extends OncePerRequestFilter {
     private final UserDAO userDAO;
     private final JWTTools jwtTools;
 
-    // @Autowired
-    // UserService userService;
-
     @Autowired
     JWTFilter(UserDAO userDAO, JWTTools jwtTools) {
         this.userDAO = userDAO;
@@ -37,7 +36,7 @@ public class JWTFilter extends OncePerRequestFilter {
         try {
             String authHeader = request.getHeader("Authorization");
             if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-                response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Please insert your token in Authorization Header");
+                response.sendError(HttpServletResponse.SC_UNAUTHORIZED, StringConfig.errorUnauthorized);
                 return;
             }
 
@@ -59,6 +58,5 @@ public class JWTFilter extends OncePerRequestFilter {
     protected boolean shouldNotFilter(HttpServletRequest request) {
         return new AntPathMatcher().match("/auth/**", request.getServletPath());
     }
-
 
 }
