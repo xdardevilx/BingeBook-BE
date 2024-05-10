@@ -7,6 +7,9 @@ import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+
+import jakarta.validation.Valid;
+
 import org.springframework.http.HttpStatus;
 
 import valerio.BingeBookBE.dto.UserLoginDTO;
@@ -34,32 +37,19 @@ public class AuthController {
         this.userService = userService;
     }
 
-    @PostMapping("/login")
-    public UserLoginResponseDTO login(@RequestBody UserLoginDTO userLoginDTO) {
-        return new UserLoginResponseDTO(this.authService.authenticateUserAndGenerateToken(userLoginDTO));
-    }
-
     @PostMapping("/register")
-    public ResponseEntity<?> register(@RequestBody @Validated UserPersonalDataRoleDTO userPersonalDataRoleDTO,
-            BindingResult bindingResult)
+    public ResponseEntity<?> register(@Valid @RequestBody UserPersonalDataRoleDTO userPersonalDataRoleDTO, BindingResult bindingResult)
             throws IOException {
-
-        if (bindingResult.hasErrors()) {
-            // If validation errors occur, construct error message
-            Map<String, String> errors = new HashMap<>();
-            for (ObjectError error : bindingResult.getAllErrors()) {
-                if (error instanceof FieldError) {
-                    FieldError fieldError = (FieldError) error;
-                    errors.put(fieldError.getField(), fieldError.getDefaultMessage());
-                } else {
-                    errors.put(error.getObjectName(), error.getDefaultMessage());
-                }
-            }
-            return ResponseEntity.badRequest().body(errors);
-        }
 
         userService.saveUser(userPersonalDataRoleDTO.userDTO(), userPersonalDataRoleDTO.personalDataDTO());
 
         return ResponseEntity.ok(HttpStatus.CREATED);
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<UserLoginResponseDTO> login(@RequestBody UserLoginDTO userLoginDTO) {
+        String token = this.authService.authenticateUserAndGenerateToken(userLoginDTO);
+        UserLoginResponseDTO responseDTO = new UserLoginResponseDTO(token);
+        return ResponseEntity.ok(responseDTO);
     }
 }

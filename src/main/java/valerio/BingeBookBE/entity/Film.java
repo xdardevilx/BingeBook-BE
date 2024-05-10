@@ -10,6 +10,8 @@ import java.math.BigInteger;
 import java.util.HashSet;
 import java.util.Set;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 @Getter
 @Setter
@@ -38,6 +40,7 @@ public class Film {
             inverseJoinColumns = @JoinColumn(name = "tag_id"))
     private Set<Tag> tags = new HashSet<>();
 
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "user_ref")
     private User userRef;

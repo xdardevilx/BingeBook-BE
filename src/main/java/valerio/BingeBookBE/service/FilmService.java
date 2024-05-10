@@ -46,27 +46,31 @@ public class FilmService {
 
         film.setTitle(filmDTO.title());
 
-        Set<Genre> genres = new HashSet<>();
-        for (BigInteger genreId : filmDTO.genreIds()) {
-            Genre genre = genreDAO.findById(genreId)
-                    .orElseThrow(() -> new IllegalArgumentException("Genre not found with ID: " + genreId));
-            genres.add(genre);
+        if (filmDTO.genreIds() != null) {
+            Set<Genre> genres = new HashSet<>();
+            for (BigInteger genreId : filmDTO.genreIds()) {
+                Genre genre = genreDAO.findById(genreId)
+                        .orElseThrow(() -> new IllegalArgumentException("Genre not found with ID: " + genreId));
+                genres.add(genre);
+            }
+            film.setGenres(genres);
         }
 
-        film.setGenres(genres);
-
-        Set<Tag> tags = new HashSet<>();
-        for (BigInteger tagId : filmDTO.tagIds()) {
-            Tag tag = tagDAO.findById(tagId)
-                    .orElseThrow(() -> new IllegalArgumentException("Tag not found with ID: " + tagId));
-            tags.add(tag);
+        if (filmDTO.tagIds() != null) {
+            Set<Tag> tags = new HashSet<>();
+            for (BigInteger tagId : filmDTO.tagIds()) {
+                Tag tag = tagDAO.findById(tagId)
+                        .orElseThrow(() -> new IllegalArgumentException("Tag not found with ID: " + tagId));
+                tags.add(tag);
+            }
+            film.setTags(tags);
         }
 
-        film.setTags(tags);
-
-        String url = (String) cloudinary.uploader().upload(filmDTO.posterUrl().getBytes(), ObjectUtils.emptyMap())
-                .get("url");
-        film.setPosterUrl(url);
+        if (filmDTO.posterUrl() != null) {
+            String url = (String) cloudinary.uploader().upload(filmDTO.posterUrl().getBytes(), ObjectUtils.emptyMap())
+                    .get("url");
+            film.setPosterUrl(url);
+        }
 
         film.setUserRef(user);
 
