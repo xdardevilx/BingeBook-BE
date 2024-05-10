@@ -3,9 +3,6 @@ package valerio.BingeBookBE.controllers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.FieldError;
-import org.springframework.validation.ObjectError;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import jakarta.validation.Valid;
@@ -17,11 +14,8 @@ import valerio.BingeBookBE.dto.UserLoginResponseDTO;
 import valerio.BingeBookBE.dto.UserPersonalDataRoleDTO;
 import valerio.BingeBookBE.service.AuthService;
 import valerio.BingeBookBE.service.UserService;
-import valerio.BingeBookBE.config.StringConfig;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/auth")

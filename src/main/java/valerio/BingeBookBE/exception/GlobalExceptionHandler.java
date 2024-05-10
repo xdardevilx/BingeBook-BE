@@ -22,7 +22,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     public ResponseEntity<Object> handleNullPointerException(NullPointerException ex, WebRequest request) {
         // Log the exception or perform any other necessary actions
         String errorMessage = ex.getMessage();
-        
+
         return handleExceptionInternal(ex, errorMessage, new HttpHeaders(), HttpStatus.INTERNAL_SERVER_ERROR, request);
     }
 
