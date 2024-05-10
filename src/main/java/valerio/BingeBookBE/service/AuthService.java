@@ -4,7 +4,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import valerio.BingeBookBE.config.StringConfig;
 import valerio.BingeBookBE.dto.UserLoginDTO;
+import valerio.BingeBookBE.dto.UserLoginResponseDTO;
 import valerio.BingeBookBE.entity.User;
 import valerio.BingeBookBE.repositories.UserDAO;
 import valerio.BingeBookBE.security.JWTTools;
@@ -23,22 +25,27 @@ public class AuthService {
         this.bcrypt = bcrypt;
     }
 
-    public String authenticateUserAndGenerateToken(UserLoginDTO payload) {
-        
-        User user = userDAO.findByEmail(payload.email()).orElse(null);
+    public UserLoginResponseDTO authenticateUserAndGenerateToken(UserLoginDTO payload) {
 
-        Boolean isEquals = bcrypt.matches(payload.password(), user.getPassword());
+        User user = new User();
+        Boolean isEquals = false;
 
-        if (user != null && isEquals) {
+        System.out.println(userDAO.findByEmail(payload.email()).isPresent());
 
-            return jwtTools.createToken(user);
+        if (userDAO.findByEmail(payload.email()).isPresent()) {
+
+            user = userDAO.findByEmail(payload.email()).get();
+            isEquals = bcrypt.matches(payload.password(), user.getPassword());
+
+            if (isEquals) {
+                return new UserLoginResponseDTO(true, user, jwtTools.createToken(user));
+            } else {
+                throw new RuntimeException(StringConfig.errorEmailAndPassword);
+            }
 
         } else {
-
-            return null;
-
+            throw new RuntimeException(StringConfig.errorEmailAndPassword);
         }
-
     }
 
 }

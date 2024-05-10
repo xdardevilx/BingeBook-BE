@@ -21,6 +21,7 @@ public class StringConfig {
     final public static String personalDataMessageError = "Dati personali sono obbligatori";
 
     ///ERROR API
+    final public static String errorEmailAndPassword = "Email e/o password non corrispondono";
     final public static String errorNotFoundRole = "Ruolo non trovato";
     final public static String errorNotFoundGenre = "Genere non trovato";
     final public static String errorNotFoundUser = "Utente non trovato";

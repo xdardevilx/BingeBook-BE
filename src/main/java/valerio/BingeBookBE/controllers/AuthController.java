@@ -16,14 +16,11 @@ import valerio.BingeBookBE.entity.User;
 import valerio.BingeBookBE.service.AuthService;
 import valerio.BingeBookBE.service.UserService;
 
-import java.io.IOException;
-
 @RestController
 @RequestMapping("/auth")
 public class AuthController {
 
     private final AuthService authService;
-
     private final UserService userService;
 
     @Autowired
@@ -37,16 +34,16 @@ public class AuthController {
             BindingResult bindingResult)
             throws Exception {
 
-        User user = userService.saveUser(userPersonalDataRoleDTO.userDTO(), userPersonalDataRoleDTO.personalDataDTO())
-                .getBody();
+        User user = userService.saveUser(userPersonalDataRoleDTO.userDTO(), userPersonalDataRoleDTO.personalDataDTO());
 
         return new ResponseEntity<User>(user, HttpStatus.CREATED);
     }
 
     @PostMapping("/login")
-    public ResponseEntity<UserLoginResponseDTO> login(@RequestBody UserLoginDTO userLoginDTO) {
-        String token = this.authService.authenticateUserAndGenerateToken(userLoginDTO);
-        UserLoginResponseDTO responseDTO = new UserLoginResponseDTO(token);
-        return ResponseEntity.ok(responseDTO);
+    public ResponseEntity<UserLoginResponseDTO> login(@Valid @RequestBody UserLoginDTO userLoginDTO) {
+
+        UserLoginResponseDTO userLoginResponseDTO = this.authService.authenticateUserAndGenerateToken(userLoginDTO);
+
+        return new ResponseEntity<>(userLoginResponseDTO, HttpStatus.OK);
     }
 }

@@ -41,6 +41,26 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         }
     }
 
+    @ExceptionHandler(RuntimeException.class)
+    public ResponseEntity<Object> handleRuntimeException(RuntimeException ex, WebRequest request) {
+        // Log the exception or perform any other necessary actions
+        String errorMessage = ex.getMessage();
+        // Create custom error response object
+        ResponseDTO responseDTO = new ResponseDTO(HttpStatus.INTERNAL_SERVER_ERROR.value(), errorMessage);
+        // Serialize error response object to JSON
+        try {
+            String jsonError = objectMapper.writeValueAsString(responseDTO);
+            // Set JSON content type
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_JSON);
+            // Return JSON response with error message
+            return new ResponseEntity<>(jsonError, headers, HttpStatus.INTERNAL_SERVER_ERROR);
+        } catch (Exception e) {
+            // If serialization fails, return a generic error response
+            return new ResponseEntity<>("{\"error\": \"Internal Server Error\"}", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
     // @ExceptionHandler(NullPointerException.class)
     // public ResponseEntity<Object> handleNullPointerException(NullPointerException
     // ex, WebRequest request) {

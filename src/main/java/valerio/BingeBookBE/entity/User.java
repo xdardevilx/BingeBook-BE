@@ -9,6 +9,8 @@ import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import java.math.BigInteger;
 import java.util.Collection;
 import java.util.HashSet;
@@ -47,7 +49,7 @@ public class User {
     @OneToMany(mappedBy = "userRef")
     private Set<Tag> tagIds = new HashSet<>();
 
-
+    @JsonIgnore
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of(new SimpleGrantedAuthority(this.roleRef.getName()));
     }

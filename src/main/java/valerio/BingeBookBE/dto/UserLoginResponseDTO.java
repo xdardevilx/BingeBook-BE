@@ -1,4 +1,9 @@
 package valerio.BingeBookBE.dto;
 
-public record UserLoginResponseDTO(String Token) {
+import valerio.BingeBookBE.entity.User;
+
+public record UserLoginResponseDTO(
+        boolean success,
+        User user,
+        String token) {
 }
