@@ -2,13 +2,19 @@ package valerio.BingeBookBE.service;
 
 import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
+
+import kong.unirest.HttpStatus;
+import valerio.BingeBookBE.config.StringConfig;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
 import valerio.BingeBookBE.config.RoleEnum;
 import valerio.BingeBookBE.dto.PersonalDataDTO;
 import valerio.BingeBookBE.dto.UserDTO;
@@ -29,7 +35,7 @@ public class UserService {
 
     @Autowired
     UserService(Cloudinary cloudinary, UserDAO userDAO, PasswordEncoder bcryptEncoder,
-                PersonalDataService personalDataService, RoleService roleService) {
+            PersonalDataService personalDataService, RoleService roleService) {
         this.cloudinary = cloudinary;
         this.userDAO = userDAO;
         this.bcryptEncoder = bcryptEncoder;
@@ -38,12 +44,19 @@ public class UserService {
     }
 
     /// CREATE
-    public User saveUser(UserDTO userDto, PersonalDataDTO personalDataDTO) throws IOException {
+    public ResponseEntity<User> saveUser(UserDTO userDto, PersonalDataDTO personalDataDTO) throws Exception {
         User user = new User();
+
         if (userDto.profilePicture() != null) {
-            String url = (String) cloudinary.uploader().upload(userDto.profilePicture().getBytes(), ObjectUtils.emptyMap())
+            String url = (String) cloudinary.uploader()
+                    .upload(userDto.profilePicture().getBytes(), ObjectUtils.emptyMap())
                     .get("url");
             user.setProfilePicture(url);
+        }
+
+        if (userDAO.findByEmail(userDto.email()).isPresent()
+                || userDAO.findByUsername(userDto.username()).isPresent()) {
+            throw new Exception(StringConfig.errorAlreadyExistsUser);
         }
 
         user.setUsername(userDto.username().toLowerCase());
@@ -51,12 +64,15 @@ public class UserService {
         user.setPassword(bcryptEncoder.encode(userDto.password()));
 
         /// Create PersonalData
-        user.setPersonalDataId(personalDataService.createPersonalData(personalDataDTO));
+        user.setPersonalData(personalDataService.createPersonalData(personalDataDTO));
 
         /// Set Role
         user.setRoleRef(roleService.getRoleByName(RoleEnum.USER.toString()));
 
-        return userDAO.save(user);
+        User user2 = userDAO.save(user);
+
+        return new ResponseEntity<User>(user2, null, HttpStatus.OK);
+
     }
 
     /// READ

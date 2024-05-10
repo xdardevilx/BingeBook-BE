@@ -36,7 +36,7 @@ public class User {
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "personal_data_id", referencedColumnName = "id")
-    private PersonalData personalDataId;
+    private PersonalData personalData;
 
     @OneToMany(mappedBy = "userRef")
     private Set<SerieTv> serieTvIds = new HashSet<>();

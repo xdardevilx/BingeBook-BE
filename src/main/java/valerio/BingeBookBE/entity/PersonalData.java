@@ -8,6 +8,8 @@ import lombok.Setter;
 
 import java.math.BigInteger;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 @Getter
 @Setter
@@ -23,11 +25,7 @@ public class PersonalData {
     private String name;
     private String surname;
 
-    @OneToOne(mappedBy = "personalDataId")
+    @JsonIgnore
+    @OneToOne(mappedBy = "personalData")
     private User user;
-
-    public PersonalData(String name, String surname) {
-        this.name = name;
-        this.surname = surname;
-    }
 }

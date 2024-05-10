@@ -12,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import valerio.BingeBookBE.dto.UserLoginDTO;
 import valerio.BingeBookBE.dto.UserLoginResponseDTO;
 import valerio.BingeBookBE.dto.UserPersonalDataRoleDTO;
+import valerio.BingeBookBE.entity.User;
 import valerio.BingeBookBE.service.AuthService;
 import valerio.BingeBookBE.service.UserService;
 
@@ -32,12 +33,14 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<?> register(@Valid @RequestBody UserPersonalDataRoleDTO userPersonalDataRoleDTO, BindingResult bindingResult)
-            throws IOException {
+    public ResponseEntity<User> register(@Valid @RequestBody UserPersonalDataRoleDTO userPersonalDataRoleDTO,
+            BindingResult bindingResult)
+            throws Exception {
 
-        userService.saveUser(userPersonalDataRoleDTO.userDTO(), userPersonalDataRoleDTO.personalDataDTO());
+        User user = userService.saveUser(userPersonalDataRoleDTO.userDTO(), userPersonalDataRoleDTO.personalDataDTO())
+                .getBody();
 
-        return ResponseEntity.ok(HttpStatus.CREATED);
+        return new ResponseEntity<User>(user, HttpStatus.CREATED);
     }
 
     @PostMapping("/login")

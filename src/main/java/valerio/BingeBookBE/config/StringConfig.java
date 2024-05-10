@@ -23,7 +23,8 @@ public class StringConfig {
     ///ERROR API
     final public static String errorNotFoundRole = "Ruolo non trovato";
     final public static String errorNotFoundGenre = "Genere non trovato";
-    final public static String errorNotFoundUser = "Utente";
+    final public static String errorNotFoundUser = "Utente non trovato";
+    final public static String errorAlreadyExistsUser = "Utente già esistente";
     final public static String errorNotFoundPersonalData = "Dati personali non trovati";
     final public static String errorNotFoundSerie = "Serie non trovata";
     final public static String errorNotFoundEpisode = "Episodio non trovato";

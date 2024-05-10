@@ -11,6 +11,9 @@ import lombok.Setter;
 
 import java.util.HashSet;
 import java.util.Set;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import java.math.BigInteger;
 
 @Entity
@@ -25,6 +28,7 @@ public class Role {
     private BigInteger id;
     private String name;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "roleRef")
     private Set<User> userIds = new HashSet<>();
 
