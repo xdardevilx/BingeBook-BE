@@ -9,6 +9,8 @@ import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import java.math.BigInteger;
 import java.util.Collection;
 import java.util.HashSet;
@@ -30,9 +32,9 @@ public class User {
     private String password;
     private String profilePicture;
 
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "role_id", referencedColumnName = "id")
-    private Role role;
+    @ManyToOne
+    @JoinColumn(name = "role_ref")
+    private Role roleRef;
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "personal_data_id", referencedColumnName = "id")
@@ -49,8 +51,6 @@ public class User {
 
 
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(new SimpleGrantedAuthority(this.role.getName()));
+        return List.of(new SimpleGrantedAuthority(this.roleRef.getName()));
     }
-
-
 }

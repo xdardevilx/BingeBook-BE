@@ -39,7 +39,6 @@ public class UserService {
 
     /// CREATE
     public User saveUser(UserDTO userDto, PersonalDataDTO personalDataDTO) throws IOException {
-        System.out.println("test prova user: " + userDto + " ----------");
         User user = new User();
         if (userDto.profilePicture() != null) {
             String url = (String) cloudinary.uploader().upload(userDto.profilePicture().getBytes(), ObjectUtils.emptyMap())
@@ -55,7 +54,7 @@ public class UserService {
         user.setPersonalDataId(personalDataService.createPersonalData(personalDataDTO));
 
         /// Set Role
-        user.setRole(roleService.getRoleByName(RoleEnum.USER.toString()));
+        user.setRoleRef(roleService.getRoleByName(RoleEnum.USER.toString()));
 
         return userDAO.save(user);
     }
