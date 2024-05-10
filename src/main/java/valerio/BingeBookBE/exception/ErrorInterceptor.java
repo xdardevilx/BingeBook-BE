@@ -2,6 +2,7 @@ package valerio.BingeBookBE.exception;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
@@ -13,6 +14,7 @@ public class ErrorInterceptor implements HandlerInterceptor {
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
             throws Exception {
         // Add pre-processing logic here
+        // Get the BindingResult from the request attributes
         int statusCode = response.getStatus();
         switch (statusCode) {
             case HttpServletResponse.SC_INTERNAL_SERVER_ERROR:
