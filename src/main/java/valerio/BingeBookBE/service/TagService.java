@@ -32,6 +32,11 @@ public class TagService {
     }
 
     /// READ
+    public Tag getTagById(BigInteger id) {
+        return tagDAO.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException(StringConfig.errorNotFoundRole + ": " + id));
+    }
+
     public Page<Tag> getListTags(int page, int size, String sortBy) {
         Pageable pageable = PageRequest.of(page, size, Sort.by(sortBy));
         return this.tagDAO.findAll(pageable);

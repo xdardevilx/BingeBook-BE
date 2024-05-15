@@ -19,10 +19,13 @@ public class StringConfig {
     final public static String genreMessageError = "Genere è obbligatorio";
     final public static String userMessageError = "Utente è obbligatorio";
     final public static String personalDataMessageError = "Dati personali sono obbligatori";
-
+    
     ///ERROR API
+    final public static String errorUploadImage = "Errore caricamento immagine";
     final public static String errorEmailAndPassword = "Email e/o password non corrispondono";
     final public static String errorNotFoundRole = "Ruolo non trovato";
+    final public static String errorNotFoundTag = "Tag non trovato";
+    final public static String errorNotFoundFilm = "Film non trovato";
     final public static String errorNotFoundGenre = "Genere non trovato";
     final public static String errorNotFoundUser = "Utente non trovato";
     final public static String errorAlreadyExistsUser = "Utente già esistente";

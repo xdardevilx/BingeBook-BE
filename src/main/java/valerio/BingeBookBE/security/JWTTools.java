@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import valerio.BingeBookBE.entity.User;
 
+import java.math.BigInteger;
 import java.util.Date;
 
 @Component
@@ -33,9 +34,9 @@ public class JWTTools {
         }
     }
 
-    public String extractIdFromToken(String token) {
-        return Jwts.parser()
-                .verifyWith(Keys.hmacShaKeyFor(secret.getBytes()))
-                .build().parseSignedClaims(token).getPayload().getSubject();
+    public BigInteger extractIdFromToken(String token) {
+        return new BigInteger(Jwts.parser()
+        .verifyWith(Keys.hmacShaKeyFor(secret.getBytes()))
+        .build().parseSignedClaims(token).getPayload().getSubject());
     }
 }

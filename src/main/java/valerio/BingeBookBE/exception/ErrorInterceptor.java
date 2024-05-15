@@ -31,7 +31,7 @@ public class ErrorInterceptor implements HandlerInterceptor {
                 // Handle 401 Unauthorized
                 // Redirect to login page, send error response, etc.
                 System.out.println("Unauthorized access: " + request.getRequestURI());
-                break;
+                throw new RuntimeException("Unauthorized access");
             default:
                 // Handle other status codes if needed
                 break;

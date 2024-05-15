@@ -19,7 +19,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 public class Film {
     @Id
     @GeneratedValue
-    @Getter(AccessLevel.NONE)
+//     @Getter(AccessLevel.NONE)
     @Setter(AccessLevel.NONE)
     private BigInteger id;
 

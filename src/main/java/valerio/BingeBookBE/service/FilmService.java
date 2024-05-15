@@ -11,13 +11,12 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import valerio.BingeBookBE.config.StringConfig;
 import valerio.BingeBookBE.dto.FilmDTO;
+import valerio.BingeBookBE.dto.PageableDTO;
 import valerio.BingeBookBE.entity.Film;
 import valerio.BingeBookBE.entity.Genre;
 import valerio.BingeBookBE.entity.Tag;
 import valerio.BingeBookBE.entity.User;
 import valerio.BingeBookBE.repositories.FilmDAO;
-import valerio.BingeBookBE.repositories.GenreDAO;
-import valerio.BingeBookBE.repositories.TagDAO;
 
 import java.io.IOException;
 import java.math.BigInteger;
@@ -29,47 +28,48 @@ public class FilmService {
 
     private final FilmDAO filmDAO;
     private final Cloudinary cloudinary;
-    private final GenreDAO genreDAO;
-    private final TagDAO tagDAO;
+    private final GenreService genreService;
+    private final TagService tagService;
 
     @Autowired
-    FilmService(FilmDAO filmDAO, Cloudinary cloudinary, GenreDAO genreDAO, TagDAO tagDAO) {
+    FilmService(FilmDAO filmDAO, Cloudinary cloudinary, GenreService genreService, TagService tagService) {
         this.filmDAO = filmDAO;
         this.cloudinary = cloudinary;
-        this.genreDAO = genreDAO;
-        this.tagDAO = tagDAO;
+        this.genreService = genreService;
+        this.tagService = tagService;
     }
 
-    /// CREATE
-    public Film createFilm(FilmDTO filmDTO, User user) throws IOException {
-        Film film = new Film();
+    public Film getFilmById(BigInteger idFilm) {
+        return filmDAO.findById(idFilm)
+                .orElseThrow(() -> new IllegalArgumentException(StringConfig.errorNotFoundFilm + ": " + idFilm));
+    }
+
+    private Film saveFilm(Film film, FilmDTO filmDTO, User user) {
 
         film.setTitle(filmDTO.title());
 
         if (filmDTO.genreIds() != null) {
-            Set<Genre> genres = new HashSet<>();
-            for (BigInteger genreId : filmDTO.genreIds()) {
-                Genre genre = genreDAO.findById(genreId)
-                        .orElseThrow(() -> new IllegalArgumentException("Genre not found with ID: " + genreId));
-                genres.add(genre);
-            }
-            film.setGenres(genres);
+            film.setGenres(genreService.hashSetGenres(filmDTO));
         }
 
         if (filmDTO.tagIds() != null) {
             Set<Tag> tags = new HashSet<>();
             for (BigInteger tagId : filmDTO.tagIds()) {
-                Tag tag = tagDAO.findById(tagId)
-                        .orElseThrow(() -> new IllegalArgumentException("Tag not found with ID: " + tagId));
+                Tag tag = tagService.getTagById(tagId);
                 tags.add(tag);
             }
             film.setTags(tags);
         }
 
         if (filmDTO.posterUrl() != null) {
-            String url = (String) cloudinary.uploader().upload(filmDTO.posterUrl().getBytes(), ObjectUtils.emptyMap())
-                    .get("url");
-            film.setPosterUrl(url);
+            try {
+                String url = (String) cloudinary.uploader()
+                        .upload(filmDTO.posterUrl().getBytes(), ObjectUtils.emptyMap())
+                        .get("url");
+                film.setPosterUrl(url);
+            } catch (IOException e) {
+                throw new IllegalArgumentException(StringConfig.errorUploadImage);
+            }
         }
 
         film.setUserRef(user);
@@ -77,47 +77,35 @@ public class FilmService {
         return filmDAO.save(film);
     }
 
-    /// READ
-    public Page<Film> getListFilms(int page, int size, String sortBy) {
+    public Film createFilm(FilmDTO filmDTO, User user) {
+        Film film = new Film();
+
+        return saveFilm(film, filmDTO, user);
+    }
+
+    public PageableDTO<Film> getListFilms(int page, int size, String sortBy) {
         Pageable pageable = PageRequest.of(page, size, Sort.by(sortBy));
-        return this.filmDAO.findAll(pageable);
+        Page<Film> filmPage = this.filmDAO.findAll(pageable);
+        return new PageableDTO<>(
+                filmPage.getNumber(),
+                filmPage.getSize(),
+                filmPage.getTotalPages(),
+                filmPage.getTotalElements(),
+                sortBy,
+                filmPage.getContent());
     }
 
-    /// UPDATE
-    public Film updateFilm(BigInteger idFilm, FilmDTO filmDTO, User user) throws IOException {
-        Film film = filmDAO.findById(idFilm)
-                .orElseThrow(() -> new IllegalArgumentException(StringConfig.errorNotFoundRole + ": " + idFilm));
+    public Film updateFilm(BigInteger idFilm, FilmDTO filmDTO, User user) {
+        Film film = getFilmById(idFilm);
 
-        film.setTitle(filmDTO.title());
-
-        Set<Genre> genres = new HashSet<>();
-        for (BigInteger genreId : filmDTO.genreIds()) {
-            Genre genre = genreDAO.findById(genreId)
-                    .orElseThrow(() -> new IllegalArgumentException("Genre not found with ID: " + genreId));
-            genres.add(genre);
-        }
-
-        film.setGenres(genres);
-
-        Set<Tag> tags = new HashSet<>();
-        for (BigInteger tagId : filmDTO.tagIds()) {
-            Tag tag = tagDAO.findById(tagId)
-                    .orElseThrow(() -> new IllegalArgumentException("Tag not found with ID: " + tagId));
-            tags.add(tag);
-        }
-
-        film.setTags(tags);
-
-        String url = (String) cloudinary.uploader().upload(filmDTO.posterUrl().getBytes(), ObjectUtils.emptyMap())
-                .get("url");
-        film.setPosterUrl(url);
-        film.setUserRef(user);
-        return filmDAO.save(film);
+        return saveFilm(film, filmDTO, user);
     }
 
-    /// DELETE
     public void deleteFilm(BigInteger idFilm) {
-        filmDAO.deleteById(idFilm);
+        if (getFilmById(idFilm) != null) {   
+            filmDAO.deleteById(idFilm);
+        }else{
+            throw new IllegalArgumentException(StringConfig.errorNotFoundFilm + ": " + idFilm);
+        }
     }
-
 }
