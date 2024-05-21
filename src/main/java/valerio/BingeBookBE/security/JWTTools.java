@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import valerio.BingeBookBE.entity.User;
 
-import java.math.BigInteger;
 import java.util.Date;
 
 @Component
@@ -23,7 +22,8 @@ public class JWTTools {
                 .signWith(Keys.hmacShaKeyFor(secret.getBytes())).compact();
     }
 
-    public void verifyToken(String token) throws ExpiredJwtException, UnsupportedJwtException, MalformedJwtException, JwtException {
+    public void verifyToken(String token)
+            throws ExpiredJwtException, UnsupportedJwtException, MalformedJwtException, JwtException {
         try {
             Jwts.parser()
                     .verifyWith(Keys.hmacShaKeyFor(secret.getBytes()))
@@ -34,9 +34,9 @@ public class JWTTools {
         }
     }
 
-    public BigInteger extractIdFromToken(String token) {
-        return new BigInteger(Jwts.parser()
-        .verifyWith(Keys.hmacShaKeyFor(secret.getBytes()))
-        .build().parseSignedClaims(token).getPayload().getSubject());
+    public Long extractIdFromToken(String token) {
+        return new Long(Jwts.parser()
+                .verifyWith(Keys.hmacShaKeyFor(secret.getBytes()))
+                .build().parseSignedClaims(token).getPayload().getSubject());
     }
 }

@@ -10,40 +10,38 @@ import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 
 import valerio.BingeBookBE.dto.UserLoginDTO;
-import valerio.BingeBookBE.dto.UserLoginResponseDTO;
 import valerio.BingeBookBE.dto.UserPersonalDataRoleDTO;
-import valerio.BingeBookBE.entity.User;
-import valerio.BingeBookBE.service.AuthService;
-import valerio.BingeBookBE.service.UserService;
+import valerio.BingeBookBE.service.AuthServiceImpl;
+import valerio.BingeBookBE.service.UserServiceImpl;
+import valerio.BingeBookBE.utils.ResponseEntityCustom;
 
 @RestController
 @RequestMapping("/auth")
 public class AuthController {
 
-    private final AuthService authService;
-    private final UserService userService;
+    private final AuthServiceImpl authService;
+    private final UserServiceImpl userService;
 
     @Autowired
-    public AuthController(AuthService authService, UserService userService) {
+    public AuthController(AuthServiceImpl authService, UserServiceImpl userService) {
         this.authService = authService;
         this.userService = userService;
     }
 
     @PostMapping("/register")
-    public ResponseEntity<User> register(@Valid @RequestBody UserPersonalDataRoleDTO userPersonalDataRoleDTO,
-            BindingResult bindingResult)
-            throws Exception {
+    public ResponseEntity<?> register(@Valid @RequestBody UserPersonalDataRoleDTO userPersonalDataRoleDTO,
+            BindingResult bindingResult) {
 
-        User user = userService.saveUser(userPersonalDataRoleDTO.userDTO(), userPersonalDataRoleDTO.personalDataDTO());
+        userService.createUser(userPersonalDataRoleDTO.userDTO(),
+                userPersonalDataRoleDTO.personalDataDTO());
 
-        return new ResponseEntity<User>(user, HttpStatus.CREATED);
+        return ResponseEntity.ok(HttpStatus.CREATED);
     }
 
     @PostMapping("/login")
-    public ResponseEntity<UserLoginResponseDTO> login(@Valid @RequestBody UserLoginDTO userLoginDTO) {
+    public ResponseEntity<?> login(@Valid @RequestBody UserLoginDTO userLoginDTO) {
 
-        UserLoginResponseDTO userLoginResponseDTO = this.authService.authenticateUserAndGenerateToken(userLoginDTO);
-
-        return new ResponseEntity<>(userLoginResponseDTO, HttpStatus.OK);
+        return ResponseEntityCustom.responseSuccess(authService.authenticateUserAndGenerateToken(userLoginDTO),
+                HttpStatus.OK);
     }
 }

@@ -1,11 +1,19 @@
 package valerio.BingeBookBE.repositories;
 
+import java.util.Optional;
+
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.lang.NonNull;
+
 import valerio.BingeBookBE.entity.Genre;
 
-import java.math.BigInteger;
+public interface GenreDAO extends JpaRepository<Genre, Long> {
 
-public interface GenreDAO extends JpaRepository<Genre, BigInteger> {
+    public @NonNull Optional<Genre> findById(@NonNull Long id);
 
-    public Genre findByName(String name);
+    public Optional<Genre> findByName(String name);
+
+    public boolean existsById(@NonNull Long id);
+
+    public boolean existsByName(String name);
 }

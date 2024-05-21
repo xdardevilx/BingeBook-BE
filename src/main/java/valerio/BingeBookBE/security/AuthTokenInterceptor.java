@@ -1,7 +1,6 @@
 package valerio.BingeBookBE.security;
 
-import java.math.BigInteger;
-
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 import jakarta.servlet.http.HttpServletRequest;
@@ -17,7 +16,8 @@ public class AuthTokenInterceptor implements HandlerInterceptor {
     }
 
     @Override
-    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+    public boolean preHandle(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response,
+            @NonNull Object handler) throws Exception {
         String authToken = request.getHeader("Authorization");
         if (authToken == null || !authToken.startsWith("Bearer ")) {
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
@@ -26,7 +26,7 @@ public class AuthTokenInterceptor implements HandlerInterceptor {
 
         String token = authToken.substring(7);
 
-        BigInteger userId = jWTTools.extractIdFromToken(token);
+        Long userId = jWTTools.extractIdFromToken(token);
         if (userId == null) {
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             return false;
@@ -37,4 +37,3 @@ public class AuthTokenInterceptor implements HandlerInterceptor {
         return true;
     }
 }
-

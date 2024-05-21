@@ -6,7 +6,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.math.BigInteger;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -17,9 +16,9 @@ import java.util.Set;
 public class Tag {
     @Id
     @GeneratedValue
-    @Getter(AccessLevel.NONE)
+    // @Getter(AccessLevel.NONE)
     @Setter(AccessLevel.NONE)
-    private BigInteger id;
+    private Long id;
     private String name;
 
     @ManyToMany(mappedBy = "tags")

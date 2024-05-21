@@ -6,8 +6,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.math.BigInteger;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
@@ -20,7 +18,7 @@ public class PersonalData {
     @GeneratedValue
     @Getter(AccessLevel.NONE)
     @Setter(AccessLevel.NONE)
-    private BigInteger id;
+    private Long id;
 
     private String name;
     private String surname;

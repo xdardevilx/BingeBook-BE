@@ -11,13 +11,16 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-import java.math.BigInteger;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 @Entity
+@Table(name = "user", uniqueConstraints = {
+        @UniqueConstraint(columnNames = "email"),
+        @UniqueConstraint(columnNames = "username")
+})
 @Getter
 @Setter
 @NoArgsConstructor
@@ -25,8 +28,10 @@ public class User {
     @Id
     @GeneratedValue
     @Setter(AccessLevel.NONE)
-    private BigInteger id;
+    private Long id;
+    @NotNull
     private String username;
+    @NotNull
     private String email;
     @NotNull
     private String password;

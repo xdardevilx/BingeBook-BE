@@ -1,12 +1,13 @@
 package valerio.BingeBookBE.repositories;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.lang.NonNull;
+
 import valerio.BingeBookBE.entity.PersonalData;
 
-import java.math.BigInteger;
 import java.util.Optional;
 
-public interface PersonalDataDAO extends JpaRepository<PersonalData, BigInteger> {
+public interface PersonalDataDAO extends JpaRepository<PersonalData, Long> {
 
-    public Optional<PersonalData> findById(BigInteger id);
+    public @NonNull Optional<PersonalData> findById(@NonNull Long id);
 }

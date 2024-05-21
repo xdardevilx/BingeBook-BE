@@ -14,8 +14,6 @@ import java.util.Set;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-import java.math.BigInteger;
-
 @Entity
 @Getter
 @Setter
@@ -23,9 +21,9 @@ import java.math.BigInteger;
 public class Role {
     @Id
     @GeneratedValue
-//    @Getter(AccessLevel.PROTECTED)
+    // @Getter(AccessLevel.PROTECTED)
     @Setter(AccessLevel.NONE)
-    private BigInteger id;
+    private Long id;
     private String name;
 
     @JsonIgnore

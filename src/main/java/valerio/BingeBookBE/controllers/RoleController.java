@@ -1,50 +1,50 @@
 package valerio.BingeBookBE.controllers;
 
-
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import valerio.BingeBookBE.dto.RoleDTO;
-import valerio.BingeBookBE.entity.Role;
-import valerio.BingeBookBE.service.RoleService;
-
-import java.math.BigInteger;
+import valerio.BingeBookBE.service.RoleServiceImpl;
+import valerio.BingeBookBE.utils.ResponseEntityCustom;
 
 @RestController
 @RequestMapping("/roles")
 public class RoleController {
-    private final RoleService roleService;
+    private final RoleServiceImpl roleService;
 
     @Autowired
-    private RoleController(RoleService roleService) {
+    private RoleController(RoleServiceImpl roleService) {
         this.roleService = roleService;
     }
 
+    @GetMapping("/get/{id}")
+    public ResponseEntity<?> getRoleById(@PathVariable Long id) {
+        return ResponseEntityCustom.responseSuccess(this.roleService.getRoleById(id), HttpStatus.OK);
+    }
+
+    @GetMapping("/all")
+    public ResponseEntity<?> getListRoles() {
+        return ResponseEntityCustom.responseSuccess(this.roleService.getAllRoles(), HttpStatus.OK);
+    }
+
     @PostMapping("/create")
-    public ResponseEntity<?> createRole(RoleDTO roleDTO) {
-        Role role = roleService.createRole(roleDTO);
-        return new ResponseEntity<Role>(role, HttpStatus.CREATED);
+    public ResponseEntity<?> createRole(@Validated @RequestBody RoleDTO roleDTO) {
+        this.roleService.createRole(roleDTO);
+        return ResponseEntityCustom.responseSuccess("Role created successfully", HttpStatus.CREATED);
     }
 
-    @GetMapping("/list")
-    public Page<Role> getListRoles(
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size,
-            @RequestParam(defaultValue = "id") String sortBy) {
-        return roleService.getListRoles(page, size, sortBy);
+    @PutMapping("/update/{id}")
+    public ResponseEntity<?> updateRole(@PathVariable Long id, @Validated @RequestBody RoleDTO roleDTO) {
+        this.roleService.updateRole(id, roleDTO);
+        return ResponseEntityCustom.responseSuccess("Role updated successfully", HttpStatus.OK);
     }
 
-    @PutMapping("/update")
-    public ResponseEntity<?> updateRole(BigInteger id, RoleDTO roleDTO) {
-        Role role = roleService.updateRole(id, roleDTO);
-        return new ResponseEntity<Role>(role, HttpStatus.OK);
-    }
-
-    @DeleteMapping("/delete")
-    public void deleteTag(BigInteger id) {
-        roleService.deleteRole(id);
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<?> deleteTag(@PathVariable Long id) {
+        this.roleService.deleteRole(id);
+        return ResponseEntityCustom.responseSuccess("Role deleted successfully", HttpStatus.OK);
     }
 
 }

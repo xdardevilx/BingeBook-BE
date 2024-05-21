@@ -5,6 +5,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.lang.NonNull;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -17,7 +18,6 @@ import valerio.BingeBookBE.entity.User;
 import valerio.BingeBookBE.repositories.UserDAO;
 
 import java.io.IOException;
-import java.math.BigInteger;
 
 @Component
 public class JWTFilter extends OncePerRequestFilter {
@@ -32,7 +32,8 @@ public class JWTFilter extends OncePerRequestFilter {
     }
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+    protected void doFilterInternal(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response,
+            @NonNull FilterChain filterChain) throws ServletException, IOException {
         try {
             String authHeader = request.getHeader("Authorization");
             if (authHeader == null || !authHeader.startsWith("Bearer ")) {
@@ -42,9 +43,10 @@ public class JWTFilter extends OncePerRequestFilter {
 
             String accessToken = authHeader.substring(7);
             jwtTools.verifyToken(accessToken);
-            BigInteger id = jwtTools.extractIdFromToken(accessToken);
+            Long id = jwtTools.extractIdFromToken(accessToken);
             User found = userDAO.findById(id).orElse(null);
-            Authentication authentication = new UsernamePasswordAuthenticationToken(found, null, found.getAuthorities());
+            Authentication authentication = new UsernamePasswordAuthenticationToken(found, null,
+                    found.getAuthorities());
             SecurityContextHolder.getContext().setAuthentication(authentication);
             filterChain.doFilter(request, response);
         } catch (Exception ex) {
@@ -55,7 +57,7 @@ public class JWTFilter extends OncePerRequestFilter {
     }
 
     @Override
-    protected boolean shouldNotFilter(HttpServletRequest request) {
+    protected boolean shouldNotFilter(@NonNull HttpServletRequest request) {
         return new AntPathMatcher().match("/auth/**", request.getServletPath());
     }
 

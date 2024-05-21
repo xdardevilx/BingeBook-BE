@@ -1,6 +1,5 @@
 package valerio.BingeBookBE.exception;
 
-import org.springframework.boot.autoconfigure.security.SecurityProperties.User;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -30,6 +29,11 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(NullPointerException.class)
     public ResponseEntity<?> handleNullPointerException(NullPointerException ex, WebRequest request) {
+        return ResponseEntityCustom.responseError(ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @ExceptionHandler(IllegalStateException.class)
+    public ResponseEntity<?> handleIllegalStateException(IllegalStateException ex, WebRequest request) {
         return ResponseEntityCustom.responseError(ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 

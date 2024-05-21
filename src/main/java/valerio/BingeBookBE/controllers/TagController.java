@@ -1,67 +1,60 @@
 package valerio.BingeBookBE.controllers;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+
+import jakarta.servlet.http.HttpServletRequest;
 import valerio.BingeBookBE.dto.TagDTO;
 import valerio.BingeBookBE.entity.Tag;
-import valerio.BingeBookBE.entity.User;
-import valerio.BingeBookBE.repositories.UserDAO;
-import valerio.BingeBookBE.service.TagService;
-
-import java.math.BigInteger;
-
+import valerio.BingeBookBE.service.TagServiceImpl;
+import valerio.BingeBookBE.utils.ResponseEntityCustom;
 
 @RestController
 @RequestMapping("/tags")
 public class TagController {
 
-    private final TagService tagService;
-    private final UserDAO userDAO;
+    private final TagServiceImpl tagService;
 
     @Autowired
-    public TagController(TagService tagService, UserDAO userDAO) {
+    public TagController(TagServiceImpl tagService) {
         this.tagService = tagService;
-        this.userDAO = userDAO;
     }
 
     @PostMapping("/create")
-    public ResponseEntity<?> createTag(TagDTO tagDTO) {
-                Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+    public ResponseEntity<?> createTag(@RequestBody @Validated TagDTO tagDTO, HttpServletRequest request) {
 
-        User user = userDAO.findByUsername(userDetails.getUsername()).orElse(null);
+        Long userId = (Long) request.getAttribute("userId");
 
-        Tag tag = tagService.createTag(tagDTO, user);
-        return new ResponseEntity<Tag>(tag, HttpStatus.CREATED);
+        tagService.createTagOfUser(tagDTO, userId);
+
+        return ResponseEntityCustom.responseSuccess("Tag created successfully", HttpStatus.CREATED);
     }
 
-    @GetMapping("/list")
-    public Page<Tag> getListTags(
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size,
-            @RequestParam(defaultValue = "id") String sortBy) {
-        return tagService.getListTags(page, size, sortBy);
+    @GetMapping("/all")
+    public ResponseEntity<?> getAllTags(HttpServletRequest request) {
+
+        Long userId = (Long) request.getAttribute("userId");
+
+        List<Tag> tags = tagService.getAllTagsOfUser(userId);
+
+        return ResponseEntityCustom.responseSuccess(tags, HttpStatus.OK);
     }
 
-    @PutMapping("/update")
-    public ResponseEntity<?> updateTag(BigInteger id, TagDTO tagDTO) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+    @PutMapping("/update/{id}")
+    public ResponseEntity<?> updateTag(@PathVariable Long id, @Validated @RequestBody TagDTO tagDTO) {
 
-        User user = userDAO.findByUsername(userDetails.getUsername()).orElse(null);
+        tagService.updateTag(id, tagDTO);
 
-        Tag tag = tagService.updateTag(id, tagDTO, user);
-        return new ResponseEntity<Tag>(tag, HttpStatus.OK);
+        return ResponseEntityCustom.responseSuccess("Tag updated successfully", HttpStatus.OK);
     }
 
     @DeleteMapping("/delete")
-    public void deleteTag(BigInteger id) {
+    public void deleteTag(Long id) {
         tagService.deleteTag(id);
     }
 

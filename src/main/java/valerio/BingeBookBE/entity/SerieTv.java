@@ -6,7 +6,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.math.BigInteger;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -18,9 +17,9 @@ import java.util.Set;
 public class SerieTv {
     @Id
     @GeneratedValue
-    @Getter(AccessLevel.NONE)
+    // @Getter(AccessLevel.NONE)
     @Setter(AccessLevel.NONE)
-    private BigInteger id;
+    private Long id;
 
     private String title;
 
@@ -34,15 +33,11 @@ public class SerieTv {
     private String posterUrl;
 
     @ManyToMany
-    @JoinTable(name = "serie_tv_genre",
-            joinColumns = @JoinColumn(name = "serie_tv_id"),
-            inverseJoinColumns = @JoinColumn(name = "genre_id"))
+    @JoinTable(name = "serie_tv_genre", joinColumns = @JoinColumn(name = "serie_tv_id"), inverseJoinColumns = @JoinColumn(name = "genre_id"))
     private Set<Genre> genres = new HashSet<>();
 
     @ManyToMany
-    @JoinTable(name = "serie_tv_tag",
-            joinColumns = @JoinColumn(name = "serie_tv_id"),
-            inverseJoinColumns = @JoinColumn(name = "tag_id"))
+    @JoinTable(name = "serie_tv_tag", joinColumns = @JoinColumn(name = "serie_tv_id"), inverseJoinColumns = @JoinColumn(name = "tag_id"))
     private Set<Tag> tags = new HashSet<>();
 
     @ManyToOne

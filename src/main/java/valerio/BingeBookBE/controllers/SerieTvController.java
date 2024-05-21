@@ -1,92 +1,70 @@
 package valerio.BingeBookBE.controllers;
 
-
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+
+import jakarta.servlet.http.HttpServletRequest;
 import valerio.BingeBookBE.dto.SerieTvDTO;
-import valerio.BingeBookBE.entity.SerieTv;
-import valerio.BingeBookBE.entity.User;
-import valerio.BingeBookBE.repositories.UserDAO;
-import valerio.BingeBookBE.service.SerieTvService;
+import valerio.BingeBookBE.service.SerieTvServiceImpl;
+import valerio.BingeBookBE.utils.ResponseEntityCustom;
 
 @RestController
 @RequestMapping("/series")
 public class SerieTvController {
 
-    private final SerieTvService serieTvService;
-    private final UserDAO userDAO;
+    private final SerieTvServiceImpl serieTvService;
 
     @Autowired
-    private SerieTvController(SerieTvService serieTvService, UserDAO userDAO) {
+    private SerieTvController(SerieTvServiceImpl serieTvService) {
         this.serieTvService = serieTvService;
-        this.userDAO = userDAO;
     }
 
-    @PostMapping("/add")
-    public ResponseEntity<?> createSerieTv(@RequestBody SerieTvDTO serieTvDTO) {
+    @PostMapping("/create")
+    public ResponseEntity<?> createSerieTv(
+            @RequestBody @Validated SerieTvDTO serieTvDto, HttpServletRequest request) {
 
-                Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+        Long userId = (Long) request.getAttribute("userId");
 
-        User user = userDAO.findByUsername(userDetails.getUsername()).orElse(null);
+        this.serieTvService.createSerieTv(serieTvDto, userId);
 
-        try {
-            SerieTv serieTv = serieTvService.createSerieTv(serieTvDTO, user);
-            return new ResponseEntity<SerieTv>(serieTv, HttpStatus.CREATED);
-        } catch (IllegalArgumentException e) {
-            // Return a 400 Bad Request with the error message
-            return ResponseEntity.badRequest().body(e.getMessage());
-        } catch (Exception e) {
-            // Return a 500 Internal Server Error with a generic error message
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred");
-        }
+        return ResponseEntityCustom.responseSuccess("SerieTv create succesfully", HttpStatus.CREATED);
+    }
 
+    @GetMapping("/detail/{idSerieTv}")
+    public ResponseEntity<?> getSerieTv(@PathVariable("idSerieTv") Long idSerieTv) {
+        return ResponseEntityCustom.responseSuccess(this.serieTvService.getSerieTvById(idSerieTv), HttpStatus.OK);
     }
 
     @GetMapping("/list")
-    public Page<SerieTv> getListGenres(@RequestParam(defaultValue = "0") int page,
-                                       @RequestParam(defaultValue = "10") int size,
-                                       @RequestParam(defaultValue = "id") String sortBy) {
-        return serieTvService.getListSerieTv(page, size, sortBy);
+    public ResponseEntity<?> getListSerieTvs(@RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "id") String sortBy, HttpServletRequest request) {
+
+        Long userId = (Long) request.getAttribute("userId");
+
+        return ResponseEntityCustom.responseSuccess(
+                this.serieTvService.getAllSeriesTvWithPagination(userId, page, size, sortBy), HttpStatus.OK);
     }
 
+    @PutMapping("/update/{idSerieTv}")
+    public ResponseEntity<?> updateSerieTv(
+            @RequestBody @Validated SerieTvDTO serieTvDto,
+            @PathVariable("idSerieTv") Long idSerieTv) {
 
-//    @PutMapping("/edit/{serieTvId}")
-//    public ResponseEntity<SerieTv> editSerieTv(@PathVariable BigInteger serieTvId, @RequestBody SerieTvDTO serieTvDTO) {
-//
-//        SerieTv serieTv = serieTvService.findById(serieTvId);
-//
-//        if (serieTv == null) {
-//            return ResponseEntity.notFound().build();
-//        }
-//
-//        serieTv.getGenres().clear();
-//
-//        for (Genre e : serieTvDTO.genreIds()) {
-//
-//            Genre genre = genreService.findById(e.getId());
-//
-//            if (genre != null) {
-//                List<Genre> genres = serieTv.getGenres();
-//
-//                if (genres == null) {
-//                    genres = new java.util.ArrayList<Genre>();
-//                }
-//                genres.add(genre);
-//
-//                serieTv.setGenres(genres);
-//            }
-//
-//        }
-//
-//        serieTvService.save(SerieTvDTO.toDto(serieTv));
-//
-//        return ResponseEntity.ok().build();
-//    }
+        this.serieTvService.updateSerieTv(idSerieTv, serieTvDto);
+
+        return ResponseEntityCustom.responseSuccess("SerieTv update succesfuly", HttpStatus.OK);
+    }
+
+    @PutMapping("/delete/{idSerieTv}")
+    public ResponseEntity<?> deleteSerieTv(@PathVariable("idSerieTv") Long idSerieTv) {
+
+        this.serieTvService.deleteSerieTv(idSerieTv);
+
+        return ResponseEntityCustom.responseSuccess("SerieTv deleted", HttpStatus.OK);
+    }
+
 }

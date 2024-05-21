@@ -1,37 +1,50 @@
 package valerio.BingeBookBE.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import valerio.BingeBookBE.dto.GenreDTO;
-import valerio.BingeBookBE.entity.Genre;
-import valerio.BingeBookBE.service.GenreService;
+import valerio.BingeBookBE.service.GenreServiceImpl;
 import valerio.BingeBookBE.utils.ResponseEntityCustom;
 
 @RestController
 @RequestMapping("/genres")
 public class GenreController {
-    private final GenreService genreService;
+    private final GenreServiceImpl genreService;
 
     @Autowired
-    GenreController(GenreService genreService) {
+    GenreController(GenreServiceImpl genreService) {
         this.genreService = genreService;
     }
 
-    @GetMapping("/list")
-    public ResponseEntity<?> getListGenres(@RequestParam(defaultValue = "0") int page,
-                                     @RequestParam(defaultValue = "10") int size,
-                                     @RequestParam(defaultValue = "id") String sortBy) {
-        return ResponseEntityCustom.responseSuccess(this.genreService.getListGenres(page, size, sortBy), HttpStatus.OK);
+    @GetMapping("/get/{id}")
+    public ResponseEntity<?> getGenreById(@PathVariable Long id) {
+        return ResponseEntityCustom.responseSuccess(this.genreService.getGenreById(id), HttpStatus.OK);
     }
 
-    @PostMapping("/add")
-    public Genre updateProfile(@RequestBody @Validated GenreDTO genre) {
+    @GetMapping("/all")
+    public ResponseEntity<?> getListGenres() {
+        return ResponseEntityCustom.responseSuccess(this.genreService.getAllGenres(), HttpStatus.OK);
+    }
 
-        return this.genreService.saveGenre(genre);
+    @PostMapping("/create")
+    public ResponseEntity<?> createGenre(@Validated @RequestBody GenreDTO genreDTO) {
+        this.genreService.createGenre(genreDTO);
+        return ResponseEntityCustom.responseSuccess("Genre created successfully", HttpStatus.CREATED);
+    }
+
+    @PutMapping("/update/{id}")
+    public ResponseEntity<?> updateGenre(@PathVariable Long id, @Validated @RequestBody GenreDTO genreDTO) {
+        this.genreService.updateGenre(id, genreDTO);
+        return ResponseEntityCustom.responseSuccess("Genre updated successfully", HttpStatus.OK);
+    }
+
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<?> deleteGenre(@PathVariable Long id) {
+        this.genreService.deleteGenre(id);
+        return ResponseEntityCustom.responseSuccess("Genre deleted successfully", HttpStatus.OK);
     }
 
 }

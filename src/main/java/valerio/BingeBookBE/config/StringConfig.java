@@ -17,8 +17,12 @@ public class StringConfig {
     final public static String nameMessageError = "Nome è obbligatorio";
     final public static String surnameMessageError = "Cognome è obbligatorio";
     final public static String genreMessageError = "Genere è obbligatorio";
+    final public static String tagMessageError = "Tag è obbligatorio";
     final public static String userMessageError = "Utente è obbligatorio";
     final public static String personalDataMessageError = "Dati personali sono obbligatori";
+
+    ///SERVICE ERROR
+    final public static String errorFailedToFetchRoles = "Errore nel recupero dei ruoli";
     
     ///ERROR API
     final public static String errorUploadImage = "Errore caricamento immagine";
@@ -29,6 +33,9 @@ public class StringConfig {
     final public static String errorNotFoundGenre = "Genere non trovato";
     final public static String errorNotFoundUser = "Utente non trovato";
     final public static String errorAlreadyExistsUser = "Utente già esistente";
+    final public static String errorAlreadyExistsGenre = "Genre già esistente";
+    final public static String errorAlreadyExistsTag = "Tag già esistente";
+    final public static String errorAlreadyExistsRole = "Role già esistente";
     final public static String errorNotFoundPersonalData = "Dati personali non trovati";
     final public static String errorNotFoundSerie = "Serie non trovata";
     final public static String errorNotFoundEpisode = "Episodio non trovato";
