@@ -6,6 +6,9 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
+
+import jakarta.persistence.EntityExistsException;
+import jakarta.persistence.EntityNotFoundException;
 import valerio.BingeBookBE.utils.ResponseEntityCustom;
 
 
@@ -19,7 +22,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(RuntimeException.class)
     public ResponseEntity<?> handleRuntimeException(RuntimeException ex, WebRequest request) {
-        return ResponseEntityCustom.responseError(ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        return ResponseEntityCustom.responseError(ex.getMessage(), HttpStatus.UNAUTHORIZED);
     }
 
     @ExceptionHandler(IllegalArgumentException.class)
@@ -29,22 +32,22 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(NullPointerException.class)
     public ResponseEntity<?> handleNullPointerException(NullPointerException ex, WebRequest request) {
-        return ResponseEntityCustom.responseError(ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        return ResponseEntityCustom.responseError(ex.getMessage(), HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(IllegalStateException.class)
     public ResponseEntity<?> handleIllegalStateException(IllegalStateException ex, WebRequest request) {
-        return ResponseEntityCustom.responseError(ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        return ResponseEntityCustom.responseError(ex.getMessage(), HttpStatus.BAD_REQUEST);
     }
 
-    // @ExceptionHandler(NullPointerException.class)
-    // public ResponseEntity<Object> handleNullPointerException(NullPointerException
-    // ex, WebRequest request) {
-    // // Log the exception or perform any other necessary actions
-    // String errorMessage = ex.getMessage();
+    @ExceptionHandler(EntityNotFoundException.class)
+    public ResponseEntity<?> handleEntityNotFoundException(EntityNotFoundException ex, WebRequest request) {
+        return ResponseEntityCustom.responseError(ex.getMessage(), HttpStatus.NOT_FOUND);
+    }
 
-    // return handleExceptionInternal(ex, errorMessage, new HttpHeaders(),
-    // HttpStatus.INTERNAL_SERVER_ERROR, request);
-    // }
+    @ExceptionHandler(EntityExistsException.class)
+    public ResponseEntity<?> handleEntityExistsException(EntityExistsException ex, WebRequest request) {
+        return ResponseEntityCustom.responseError(ex.getMessage(), HttpStatus.CONFLICT);
+    }
 
 }

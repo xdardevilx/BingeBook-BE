@@ -32,7 +32,8 @@ public class UserController {
     @GetMapping("/pagination")
     public ResponseEntity<?> getAllUsersWithPagination(
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size, String sortBy) {
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "id") String sortBy) {
         PaginatedResponse<User> paginatedResponse = userService.getAllUsersWithPagination(page, size, sortBy);
 
         return ResponseEntityCustom.responseSuccess(paginatedResponse, HttpStatus.OK);

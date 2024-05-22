@@ -1,4 +1,4 @@
-package valerio.BingeBookBE.config;
+package valerio.BingeBookBE.utils;
 
 public enum RoleEnum {
     ADMIN,

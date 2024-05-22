@@ -9,6 +9,7 @@ import jakarta.validation.Valid;
 
 import org.springframework.http.HttpStatus;
 
+import valerio.BingeBookBE.config.StringConfig;
 import valerio.BingeBookBE.dto.UserLoginDTO;
 import valerio.BingeBookBE.dto.UserPersonalDataRoleDTO;
 import valerio.BingeBookBE.service.AuthServiceImpl;
@@ -35,7 +36,7 @@ public class AuthController {
         userService.createUser(userPersonalDataRoleDTO.userDTO(),
                 userPersonalDataRoleDTO.personalDataDTO());
 
-        return ResponseEntity.ok(HttpStatus.CREATED);
+        return ResponseEntityCustom.responseSuccess(StringConfig.successCreateUser, HttpStatus.CREATED);
     }
 
     @PostMapping("/login")

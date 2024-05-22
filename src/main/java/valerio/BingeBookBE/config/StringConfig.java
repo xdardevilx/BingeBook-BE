@@ -23,6 +23,9 @@ public class StringConfig {
 
     ///SERVICE ERROR
     final public static String errorFailedToFetchRoles = "Errore nel recupero dei ruoli";
+
+    ///SUCCESS MESSAGES
+    final public static String successCreateUser = "Utente creato con successo";
     
     ///ERROR API
     final public static String errorUploadImage = "Errore caricamento immagine";
@@ -41,5 +44,5 @@ public class StringConfig {
     final public static String errorNotFoundEpisode = "Episodio non trovato";
     final public static String errorNotFoundSeason = "Stagione non trovata";
     final public static String errorInsertData = "Errore inserimento dati";
-    final public static String errorUnauthorized = "Inserisci il tuo token in Authorization Header";
+    final public static String errorUnauthorized = "Accesso non autorizzato";
 }

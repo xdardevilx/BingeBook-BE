@@ -2,6 +2,7 @@ package valerio.BingeBookBE.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
@@ -25,9 +26,14 @@ public class WebConfig implements WebMvcConfigurer {
     public void addInterceptors(@NonNull InterceptorRegistry registry) {
         // Add ErrorInterceptor for handling exceptions globally
         registry.addInterceptor(errorInterceptor).addPathPatterns("/**");
-        
+
         // Add AuthTokenInterceptor for handling authorization token globally
         registry.addInterceptor(authTokenInterceptor)
-        .excludePathPatterns("/auth/**");
+                .excludePathPatterns("/auth/**");
+    }
+    
+    @Override
+    public void addCorsMappings(@NonNull CorsRegistry registry) {
+        registry.addMapping("/**").allowedOrigins("*").allowedMethods("GET", "POST", "PUT", "DELETE");
     }
 }

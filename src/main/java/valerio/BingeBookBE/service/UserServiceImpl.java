@@ -12,14 +12,15 @@ import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
-import valerio.BingeBookBE.config.RoleEnum;
 import valerio.BingeBookBE.dto.PersonalDataDTO;
 import valerio.BingeBookBE.dto.UserDTO;
 import valerio.BingeBookBE.dto.response.PaginatedResponse;
 import valerio.BingeBookBE.entity.User;
 import valerio.BingeBookBE.repositories.UserDAO;
 import valerio.BingeBookBE.service.interfaces.UserService;
+import valerio.BingeBookBE.utils.RoleEnum;
 
 import java.util.List;
 
@@ -83,8 +84,8 @@ public class UserServiceImpl implements UserService {
     @Override
     public void createUser(UserDTO userDto, PersonalDataDTO personalDataDto) {
         if (userDAO.existsByEmailOrUsername(userDto.email(), userDto.username())) {
-            throw new EntityNotFoundException(
-                    StringConfig.errorNotFoundUser + ": " + userDto.email() + " or " + userDto.username());
+            throw new EntityExistsException(
+                    StringConfig.errorAlreadyExistsUser + ": " + userDto.email() + " or " + userDto.username());
         }
 
         User user = new User();
