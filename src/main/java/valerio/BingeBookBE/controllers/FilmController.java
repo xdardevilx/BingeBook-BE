@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 
 import valerio.BingeBookBE.dto.FilmDTO;
+import valerio.BingeBookBE.dto.search_criteria.SearchCriteriaFilmDTO;
 import valerio.BingeBookBE.service.FilmServiceImpl;
 import valerio.BingeBookBE.utils.ResponseEntityCustom;
 
@@ -47,7 +48,7 @@ public class FilmController {
         return ResponseEntityCustom.responseSuccess(this.filmService.getFilmById(idFilm), HttpStatus.OK);
     }
 
-    @GetMapping("/list")
+    @GetMapping("/pagination")
     public ResponseEntity<?> getListFilms(@RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
             @RequestParam(defaultValue = "id") String sortBy, HttpServletRequest request) {
@@ -74,6 +75,20 @@ public class FilmController {
         this.filmService.deleteFilm(idFilm);
 
         return ResponseEntityCustom.responseSuccess("Film deleted", HttpStatus.OK);
+    }
+
+    @GetMapping("/search")
+    public ResponseEntity<?> searchFilms(
+        @RequestBody @Validated SearchCriteriaFilmDTO searchCriteria,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "id") String sortBy, HttpServletRequest request) {
+
+        Long userId = (Long) request.getAttribute("userId");
+
+        return ResponseEntityCustom.responseSuccess(
+                filmService.getFilmsByUserRefAndSearchCriteriaWithPagination(userId, searchCriteria, page, size, sortBy),
+                HttpStatus.OK);
     }
 
 }

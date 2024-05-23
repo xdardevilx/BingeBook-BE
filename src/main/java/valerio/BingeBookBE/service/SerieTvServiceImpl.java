@@ -8,13 +8,13 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import valerio.BingeBookBE.dto.SerieTvDTO;
 import valerio.BingeBookBE.dto.response.PaginatedResponse;
-import valerio.BingeBookBE.dto.search_criteria.SearchCreiteriaSerieTvDTO;
+import valerio.BingeBookBE.dto.search_criteria.SearchCriteriaSerieTvDTO;
 import valerio.BingeBookBE.entity.SerieTv;
 import valerio.BingeBookBE.repositories.SerieTvDAO;
 import valerio.BingeBookBE.service.interfaces.SerieTvService;
 
 @Service
-public class SerieTvServiceImpl implements SerieTvService{
+public class SerieTvServiceImpl implements SerieTvService {
 
     private final SerieTvDAO serieTvDAO;
     private final CloudinaryService cloudinaryService;
@@ -108,95 +108,16 @@ public class SerieTvServiceImpl implements SerieTvService{
     }
 
     @Override
-    public PaginatedResponse<SerieTv> getSeriesTvBySearchCriteriaWithPagination(Long idUser,
-            SearchCreiteriaSerieTvDTO searchCriteria, int page, int size, String sortBy) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getSeriesTvBySearchCriteriaWithPagination'");
+    public PaginatedResponse<SerieTv> getSeriesTvByUserRefAndSearchCriteriaWithPagination(Long idUser,
+            SearchCriteriaSerieTvDTO searchCriteria, int page, int size, String sortBy) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<SerieTv> serieTvPage = serieTvDAO.findByUserRefAndSearchCriteria(
+                idUser,
+                searchCriteria.title(),
+                searchCriteria.genreId(),
+                searchCriteria.tagId(),
+                pageable);
+        return new PaginatedResponse<>(serieTvPage.getContent(), serieTvPage.getNumber(), serieTvPage.getSize(),
+                serieTvPage.getTotalPages(), serieTvPage.getTotalElements(), serieTvPage.getSort().toString());
     }
-
-    // /// CREATE
-    // public SerieTv createSerieTv(SerieTvDTO serieTvDto, User user) throws IOException {
-
-    //     SerieTv serieTv = new SerieTv();
-    //     serieTv.setTitle(serieTvDto.title().toLowerCase());
-    //     serieTv.setLastEpisodeViewed(serieTvDto.lastEpisodeViewed());
-    //     serieTv.setLastEpisodeViewedSeason(serieTvDto.lastEpisodeViewedSeason());
-    //     // serieTv.setPosterUrl(cloudinary.url().generate(serieTvDto.posterUrl()));
-
-    //     String url = (String) cloudinary.uploader().upload(serieTvDto.posterUrl().getBytes(), ObjectUtils.emptyMap())
-    //             .get("url");
-
-    //     serieTv.setPosterUrl(url);
-
-    //     Set<Genre> genres = new HashSet<>();
-    //     for (Long genreId : serieTvDto.genreIds()) {
-    //         Genre genre = genreDAO.findById(genreId)
-    //                 .orElseThrow(() -> new IllegalArgumentException("Genre not found with ID: " + genreId));
-    //         genres.add(genre);
-    //     }
-    //     serieTv.setGenres(genres);
-
-    //     Set<Tag> tags = new HashSet<>();
-    //     for (Long tagId : serieTvDto.tagIds()) {
-    //         Tag tag = tagDAO.findById(tagId)
-    //                 .orElseThrow(() -> new IllegalArgumentException("Tag not found with ID: " + tagId));
-    //         tags.add(tag);
-    //     }
-    //     serieTv.setTags(tags);
-
-    //     serieTv.setUserRef(user);
-
-    //     return serieTvDAO.save(serieTv);
-    // }
-
-    // /// READ
-    // public SerieTv getSerieTvById(Long id) {
-    //     return serieTvDAO.findById(id).orElse(null);
-    // }
-
-    // public Page<SerieTv> getListSerieTv(int page, int size, String sortBy) {
-    //     Pageable pageable = PageRequest.of(page, size, Sort.by(sortBy));
-    //     return this.serieTvDAO.findAll(pageable);
-    // }
-
-    // /// UPDATE
-    // public SerieTv updateSerieTv(Long idSerieTv, SerieTvDTO serieTvDto, User user) throws IOException {
-    //     SerieTv serieTv = serieTvDAO.findById(idSerieTv).orElse(null);
-    //     if (serieTv == null) {
-    //         return null;
-    //     }
-
-    //     serieTv.setTitle(serieTvDto.title().toLowerCase());
-    //     serieTv.setLastEpisodeViewed(serieTvDto.lastEpisodeViewed());
-    //     serieTv.setLastEpisodeViewedSeason(serieTvDto.lastEpisodeViewedSeason());
-    //     String url = (String) cloudinary.uploader().upload(serieTvDto.posterUrl().getBytes(), ObjectUtils.emptyMap())
-    //             .get("url");
-
-    //     serieTv.setPosterUrl(url);
-
-    //     Set<Genre> genres = new HashSet<>();
-    //     for (Long genreId : serieTvDto.genreIds()) {
-    //         Genre genre = genreDAO.findById(genreId)
-    //                 .orElseThrow(() -> new IllegalArgumentException("Genre not found with ID: " + genreId));
-    //         genres.add(genre);
-    //     }
-    //     serieTv.setGenres(genres);
-
-    //     Set<Tag> tags = new HashSet<>();
-    //     for (Long tagId : serieTvDto.tagIds()) {
-    //         Tag tag = tagDAO.findById(tagId)
-    //                 .orElseThrow(() -> new IllegalArgumentException("Tag not found with ID: " + tagId));
-    //         tags.add(tag);
-    //     }
-    //     serieTv.setTags(tags);
-
-    //     serieTv.setUserRef(user);
-
-    //     return serieTvDAO.save(serieTv);
-    // }
-
-    // /// DELETE
-    // public void deleteSerieTv(Long id) {
-    //     serieTvDAO.deleteById(id);
-    // }
 }

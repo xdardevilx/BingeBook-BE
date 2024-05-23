@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 import valerio.BingeBookBE.config.StringConfig;
 import valerio.BingeBookBE.dto.FilmDTO;
 import valerio.BingeBookBE.dto.response.PaginatedResponse;
-import valerio.BingeBookBE.dto.search_criteria.SearchCreiteriaFilmDTO;
+import valerio.BingeBookBE.dto.search_criteria.SearchCriteriaFilmDTO;
 import valerio.BingeBookBE.entity.Film;
 import valerio.BingeBookBE.repositories.FilmDAO;
 import valerio.BingeBookBE.service.interfaces.FilmService;
@@ -105,74 +105,16 @@ public class FilmServiceImpl implements FilmService {
     }
 
     @Override
-    public PaginatedResponse<Film> getFilmsBySearchCriteriaWithPagination(Long idUser,
-            SearchCreiteriaFilmDTO searchCriteria, int page, int size, String sortBy) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getFilmsBySearchCriteriaWithPagination'");
+    public PaginatedResponse<Film> getFilmsByUserRefAndSearchCriteriaWithPagination(Long idUser,
+            SearchCriteriaFilmDTO searchCriteria, int page, int size, String sortBy) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Film> filmPage = filmDAO.findByUserRefAndSearchCriteria(
+                idUser,
+                searchCriteria.title(),
+                searchCriteria.genreId(),
+                searchCriteria.tagId(),
+                pageable);
+        return new PaginatedResponse<>(filmPage.getContent(), filmPage.getNumber(), filmPage.getSize(),
+                filmPage.getTotalPages(), filmPage.getTotalElements(), filmPage.getSort().toString());
     }
-
-    // public Film getFilmById(Long idFilm) {
-    // return filmDAO.findById(idFilm)
-    // .orElseThrow(() -> new
-    // IllegalArgumentException(StringConfig.errorNotFoundFilm + ": " + idFilm));
-    // }
-
-    // private Film saveFilm(Film film, FilmDTO filmDTO, User user) {
-
-    // film.setTitle(filmDTO.title());
-
-    // if (filmDTO.genreIds() != null) {
-    // film.setGenres(genreService.hashSetGenres(filmDTO));
-    // }
-
-    // if (filmDTO.tagIds() != null) {
-    // Set<Tag> tags = new HashSet<>();
-    // for (Long tagId : filmDTO.tagIds()) {
-    // Tag tag = tagService.getTagById(tagId);
-    // tags.add(tag);
-    // }
-    // film.setTags(tags);
-    // }
-
-    // if (filmDTO.posterUrl() != null) {
-    // cloudinaryService.uploadImageFromMultipartFile(filmDTO.posterUrl());
-    // }
-
-    // film.setUserRef(user);
-
-    // return filmDAO.save(film);
-    // }
-
-    // public Film createFilm(FilmDTO filmDTO, User user) {
-    // Film film = new Film();
-
-    // return saveFilm(film, filmDTO, user);
-    // }
-
-    // public PageableDTO<Film> getListFilms(int page, int size, String sortBy) {
-    // Pageable pageable = PageRequest.of(page, size, Sort.by(sortBy));
-    // Page<Film> filmPage = this.filmDAO.findAll(pageable);
-    // return new PageableDTO<>(
-    // filmPage.getNumber(),
-    // filmPage.getSize(),
-    // filmPage.getTotalPages(),
-    // filmPage.getTotalElements(),
-    // sortBy,
-    // filmPage.getContent());
-    // }
-
-    // public Film updateFilm(Long idFilm, FilmDTO filmDTO, User user) {
-    // Film film = getFilmById(idFilm);
-
-    // return saveFilm(film, filmDTO, user);
-    // }
-
-    // public void deleteFilm(Long idFilm) {
-    // if (getFilmById(idFilm) != null) {
-    // filmDAO.deleteById(idFilm);
-    // } else {
-    // throw new IllegalArgumentException(StringConfig.errorNotFoundFilm + ": " +
-    // idFilm);
-    // }
-    // }
 }

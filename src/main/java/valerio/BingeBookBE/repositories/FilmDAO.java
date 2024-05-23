@@ -13,10 +13,14 @@ public interface FilmDAO extends JpaRepository<Film, Long> {
     @Query("SELECT f FROM Film f WHERE f.userRef.id = :idUser")
     Page<Film> findAllByUserRef(@Param("idUser") Long idUser, Pageable pageable);
 
-    // @Query("SELECT f FROM Film f WHERE f.title = :title OR f.genre.id = :genreId OR f.tag.id = :tagId")
-    // Page<Film> findByUserRefAndTitleOrGenreIdsOrTagIds(
-    //     @Param("idUser") Long idUser,
-    //         @Param("title") String title,
-    //         @Param("genreId") Long genreId,
-    //         @Param("tagId") Long tagId);
+    @Query("SELECT f FROM Film f LEFT JOIN f.genres g LEFT JOIN f.tags t WHERE f.userRef.id = :idUser " +
+           "AND (:title IS NULL OR f.title LIKE %:title%) " +
+           "AND (:genreId IS NULL OR g.id = :genreId) " +
+           "AND (:tagId IS NULL OR t.id = :tagId)")
+    Page<Film> findByUserRefAndSearchCriteria(
+        @Param("idUser") Long idUser,
+        @Param("title") String title,
+        @Param("genreId") Long genreId,
+        @Param("tagId") Long tagId,
+        Pageable pageable);
 }

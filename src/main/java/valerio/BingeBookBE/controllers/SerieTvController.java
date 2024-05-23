@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 
 import jakarta.servlet.http.HttpServletRequest;
 import valerio.BingeBookBE.dto.SerieTvDTO;
+import valerio.BingeBookBE.dto.search_criteria.SearchCriteriaSerieTvDTO;
 import valerio.BingeBookBE.service.SerieTvServiceImpl;
 import valerio.BingeBookBE.utils.ResponseEntityCustom;
 
@@ -65,6 +66,21 @@ public class SerieTvController {
         this.serieTvService.deleteSerieTv(idSerieTv);
 
         return ResponseEntityCustom.responseSuccess("SerieTv deleted", HttpStatus.OK);
+    }
+
+    @GetMapping("/search")
+    public ResponseEntity<?> searchFilms(
+            @RequestBody @Validated SearchCriteriaSerieTvDTO searchCriteria,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "id") String sortBy, HttpServletRequest request) {
+
+        Long userId = (Long) request.getAttribute("userId");
+
+        return ResponseEntityCustom.responseSuccess(
+                serieTvService.getSeriesTvByUserRefAndSearchCriteriaWithPagination(userId, searchCriteria, page, size,
+                        sortBy),
+                HttpStatus.OK);
     }
 
 }

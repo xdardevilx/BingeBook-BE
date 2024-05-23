@@ -35,8 +35,9 @@ public class JWTTools {
     }
 
     public Long extractIdFromToken(String token) {
-        return new Long(Jwts.parser()
+        String id = Jwts.parser()
                 .verifyWith(Keys.hmacShaKeyFor(secret.getBytes()))
-                .build().parseSignedClaims(token).getPayload().getSubject());
+                .build().parseSignedClaims(token).getPayload().getSubject();
+        return Long.parseLong(id);
     }
 }
