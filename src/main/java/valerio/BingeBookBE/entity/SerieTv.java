@@ -1,5 +1,6 @@
 package valerio.BingeBookBE.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -40,6 +41,7 @@ public class SerieTv {
     @JoinTable(name = "serie_tv_tag", joinColumns = @JoinColumn(name = "serie_tv_id"), inverseJoinColumns = @JoinColumn(name = "tag_id"))
     private Set<Tag> tags = new HashSet<>();
 
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "user_ref")
     private User userRef;

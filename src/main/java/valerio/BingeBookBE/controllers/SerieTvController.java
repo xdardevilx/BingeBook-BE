@@ -1,12 +1,11 @@
 package valerio.BingeBookBE.controllers;
 
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-
-import jakarta.servlet.http.HttpServletRequest;
 import valerio.BingeBookBE.dto.SerieTvDTO;
 import valerio.BingeBookBE.dto.search_criteria.SearchCriteriaSerieTvDTO;
 import valerio.BingeBookBE.service.SerieTvServiceImpl;
@@ -41,13 +40,24 @@ public class SerieTvController {
 
     @GetMapping("/list")
     public ResponseEntity<?> getListSerieTvs(@RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size,
-            @RequestParam(defaultValue = "id") String sortBy, HttpServletRequest request) {
+                                             @RequestParam(defaultValue = "10") int size,
+                                             @RequestParam(defaultValue = "id") String sortBy, HttpServletRequest request) {
 
         Long userId = (Long) request.getAttribute("userId");
 
         return ResponseEntityCustom.responseSuccess(
                 this.serieTvService.getAllSeriesTvWithPagination(userId, page, size, sortBy), HttpStatus.OK);
+    }
+
+    @GetMapping("/pagination")
+    public ResponseEntity<?> getListSerieTv(@RequestParam(defaultValue = "0") int page,
+                                            @RequestParam(defaultValue = "10") int size,
+                                            @RequestParam(defaultValue = "id") String sortBy, HttpServletRequest request) {
+
+        Long userId = (Long) request.getAttribute("userId");
+
+        return ResponseEntityCustom
+                .responseSuccess(this.serieTvService.getAllSeriesTvWithPagination(userId, page, size, sortBy), HttpStatus.OK);
     }
 
     @PutMapping("/update/{idSerieTv}")
