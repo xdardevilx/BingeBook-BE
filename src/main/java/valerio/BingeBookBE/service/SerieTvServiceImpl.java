@@ -1,11 +1,15 @@
 package valerio.BingeBookBE.service;
 
+import java.io.IOException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+
 import valerio.BingeBookBE.dto.SerieTvDTO;
 import valerio.BingeBookBE.dto.response.PaginatedResponse;
 import valerio.BingeBookBE.dto.search_criteria.SearchCriteriaSerieTvDTO;
@@ -59,7 +63,15 @@ public class SerieTvServiceImpl implements SerieTvService {
         serieTv.setLastEpisodeViewedSeason(serieTvDTO.lastEpisodeViewedSeason());
 
         if (serieTvDTO.posterUrl() != null) {
-            serieTv.setPosterUrl(cloudinaryService.uploadImageFromMultipartFile(serieTvDTO.posterUrl()));
+            MultipartFile file;
+            try {
+                file = cloudinaryService.convertStringToMultipartFile(serieTvDTO.posterUrl(), "image");
+                String url = cloudinaryService.uploadImageFromMultipartFile(file);
+                serieTv.setPosterUrl(url);
+            } catch (IOException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
         }
 
         if (serieTvDTO.genreIds() != null) {
@@ -84,7 +96,8 @@ public class SerieTvServiceImpl implements SerieTvService {
         serieTv.setLastEpisodeViewedSeason(serieTvDTO.lastEpisodeViewedSeason());
 
         if (serieTvDTO.posterUrl() != null) {
-            serieTv.setPosterUrl(cloudinaryService.uploadImageFromMultipartFile(serieTvDTO.posterUrl()));
+            // TODO: Implement this
+            // serieTv.setPosterUrl(cloudinaryService.uploadImageFromMultipartFile(serieTvDTO.posterUrl()));
         }
 
         if (serieTvDTO.genreIds() != null) {

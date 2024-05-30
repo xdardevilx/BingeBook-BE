@@ -1,11 +1,15 @@
 package valerio.BingeBookBE.service;
 
+import java.io.IOException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+
 import valerio.BingeBookBE.config.StringConfig;
 import valerio.BingeBookBE.dto.FilmDTO;
 import valerio.BingeBookBE.dto.response.PaginatedResponse;
@@ -66,7 +70,15 @@ public class FilmServiceImpl implements FilmService {
         }
 
         if (filmDTO.posterUrl() != null) {
-            cloudinaryService.uploadImageFromMultipartFile(filmDTO.posterUrl());
+            MultipartFile file;
+            try {
+                file = cloudinaryService.convertStringToMultipartFile(filmDTO.posterUrl(), "image");
+                String url = cloudinaryService.uploadImageFromMultipartFile(file);
+                film.setPosterUrl(url);
+            } catch (IOException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
         }
 
         film.setUserRef(userService.getUserById(idUser));
@@ -89,7 +101,8 @@ public class FilmServiceImpl implements FilmService {
         }
 
         if (filmDTO.posterUrl() != null) {
-            cloudinaryService.uploadImageFromMultipartFile(filmDTO.posterUrl());
+            // TODO: Implement this
+            // cloudinaryService.uploadImageFromMultipartFile(filmDTO.posterUrl());
         }
 
         filmDAO.save(film);

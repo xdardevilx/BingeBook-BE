@@ -30,7 +30,8 @@ public class SerieTv {
     @Column(name = "last_episode_viewed_season")
     private int lastEpisodeViewedSeason;
 
-    @Column(name = "poster_url")
+    @Column(name = "poster_url", columnDefinition = "TEXT")
+
     private String posterUrl;
 
     @ManyToMany

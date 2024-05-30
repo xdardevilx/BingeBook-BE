@@ -7,11 +7,9 @@ import valerio.BingeBookBE.service.TagServiceImpl.TagsIdsProvider;
 
 import java.util.Set;
 
-import org.springframework.web.multipart.MultipartFile;
-
 public record FilmDTO(
         @NotEmpty(message = StringConfig.titleMessageError) String title,
-        MultipartFile posterUrl,
+        String posterUrl,
         @Override Set<Long> genreIds,
         @Override Set<Long> tagIds) implements GenreIdsProvider, TagsIdsProvider {
 }

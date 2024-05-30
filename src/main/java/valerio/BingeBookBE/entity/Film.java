@@ -24,7 +24,7 @@ public class Film {
 
     private String title;
 
-    @Column(name = "poster_url")
+    @Column(name = "poster_url", columnDefinition = "TEXT")
     private String posterUrl;
 
     @ManyToMany
